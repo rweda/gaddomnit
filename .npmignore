@@ -1,0 +1,7 @@
+doc
+src
+test
+.gitignore
+.npmignore
+.travis.yml
+Cakefile
