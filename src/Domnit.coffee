@@ -1,4 +1,5 @@
 Promise = require "bluebird"
+ElementSerializer = require "./ElementSerializer"
 
 ###
 Serializes the DOM into a standalone HTML file.
@@ -6,8 +7,15 @@ Serializes the DOM into a standalone HTML file.
 class Domnit
 
   ###
+  @param [Object] opt options for customizing Domnit's behavior.
+  ###
+  constructor: (@opt) ->
+
+  elementSerializer: ElementSerializer
+
+  ###
   Serialize an HTML tree into a string.
-  @param [HTMLElement] el the element to serialize, including all it's children.
+  @param [Element] el the element to serialize, including all it's children.
   @return [Promise<String>] the serialized DOM
 
   @example Serialize the entire document, using jQuery to select `<html>`.
@@ -19,6 +27,16 @@ class Domnit
       });
   ###
   serialize: (el) ->
+    customSerialize = "#{el.tagName}Serializer"
+    Serializer = @[customSerialize] ? @elementSerializer
+    children = []
+    for child in el.children
+      children.push @serialize child
+    Promise
+      .all children
+      .then (children) =>
+        element = new Serializer el, children, @opt
+        element.toString()
 
 
 module.exports = Domnit

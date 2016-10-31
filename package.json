@@ -29,6 +29,7 @@
     "underscore": "^1.8.3"
   },
   "dependencies": {
-    "bluebird": "^3.4.6"
+    "bluebird": "^3.4.6",
+    "jsdom": "^9.8.3"
   }
 }
