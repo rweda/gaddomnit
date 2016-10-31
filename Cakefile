@@ -1,6 +1,7 @@
 _ = require "underscore"
 Promise = require "bluebird"
 {exec} = require "child-process-promise"
+replace = require "replace"
 
 rollup = require "rollup"
 commonjs = require "rollup-plugin-commonjs"
@@ -17,6 +18,9 @@ option '', '--no-partial', "Disable 'partial' builds, which don't include major 
 
 task 'build', "Build Domnit", (opts) ->
   build opts
+
+task 'docs', "Build Docs", (opts) ->
+  docs opts
 
 _rolled = {}
 roller = (opts={}) ->
@@ -96,3 +100,19 @@ build = (opts) ->
       console.log "Compiled successfully."
     .catch (err) ->
       console.log "Error while compiling: #{err}"
+
+docs = (opts) ->
+  Promise
+    .resolve exec "$(npm bin)/codo --name 'Gad Domnit!' --title 'Gad Domnit Documentation' --private --readme README.md ./src"
+    .then (res) ->
+      console.log res.stderr
+      console.log res.stdout
+    .then ->
+      replace
+        regex: "v[0-9]+\.[0-9]+\.[0-9]+(?:-(?:[0-9A-Za-z-]\.?)+)?"
+        replacement: "v#{require("./package.json").version}"
+        paths: ['doc/']
+        recursive: yes
+        include: '*.html'
+    .error (err) ->
+      console.log "Error while updating docs: #{err}"
