@@ -1,0 +1,19 @@
+{
+  "name": "gaddomnit",
+  "version": "0.0.0",
+  "description": "Serialize the DOM into a standalone HTML file.",
+  "main": "public/gaddomnit.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rweda/gaddomnit.git"
+  },
+  "author": "Ryan Leonard (http://ryanleonard.us)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rweda/gaddomnit/issues"
+  },
+  "homepage": "https://github.com/rweda/gaddomnit#readme"
+}
