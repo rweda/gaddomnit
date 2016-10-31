@@ -3,6 +3,7 @@ Promise = require "bluebird"
 ElementSerializer = require "./ElementSerializer"
 ScriptSerializer = require "./ScriptSerializer"
 LinkSerializer = require "./LinkSerializer"
+StyleSerializer = require "./StyleSerializer"
 
 ###
 Serializes the DOM into a standalone HTML file.
@@ -23,6 +24,8 @@ class Domnit
   scriptSerializer: ScriptSerializer
 
   linkSerializer: LinkSerializer
+
+  styleSerializer: StyleSerializer
 
   ###
   Serialize an HTML tree into a string.

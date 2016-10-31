@@ -2491,11 +2491,57 @@ LinkSerializer$1 = (function(superClass) {
 
 var LinkSerializer_1 = LinkSerializer$1;
 
+var ElementSerializer$4;
+var StyleSerializer$1;
+var extend$2 = function(child, parent) { for (var key in parent) { if (hasProp$2.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+var hasProp$2 = {}.hasOwnProperty;
+
+ElementSerializer$4 = ElementSerializer_1;
+
+
+/*
+Serializes `<style>` elements by removing the contents.
+ */
+
+StyleSerializer$1 = (function(superClass) {
+  extend$2(StyleSerializer, superClass);
+
+  function StyleSerializer() {
+    return StyleSerializer.__super__.constructor.apply(this, arguments);
+  }
+
+
+  /*
+  Removes the content of a script
+   */
+
+  StyleSerializer.prototype.removeBody = function() {
+    return this.el.innerHTML = "";
+  };
+
+
+  /*
+  Makes sure that {ElementSerializer#toString} doesn't have an innerHTML with style contents.
+   */
+
+  StyleSerializer.prototype.toString = function() {
+    StyleSerializer.__super__.toString.call(this);
+    this.removeBody();
+    return this.el.outerHTML;
+  };
+
+  return StyleSerializer;
+
+})(ElementSerializer$4);
+
+var StyleSerializer_1 = StyleSerializer$1;
+
 var Domnit;
 var ElementSerializer;
 var LinkSerializer;
 var Promise;
 var ScriptSerializer;
+var StyleSerializer;
 var defaultsDeep;
 
 defaultsDeep = index;
@@ -2507,6 +2553,8 @@ ElementSerializer = ElementSerializer_1;
 ScriptSerializer = ScriptSerializer_1;
 
 LinkSerializer = LinkSerializer_1;
+
+StyleSerializer = StyleSerializer_1;
 
 
 /*
@@ -2532,6 +2580,8 @@ Domnit = (function() {
   Domnit.prototype.scriptSerializer = ScriptSerializer;
 
   Domnit.prototype.linkSerializer = LinkSerializer;
+
+  Domnit.prototype.styleSerializer = StyleSerializer;
 
 
   /*
