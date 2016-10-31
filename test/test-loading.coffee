@@ -20,6 +20,13 @@ describe "Domnit Loading", ->
           domnit = new Domnit()
           domnit.serialize.should.be.a "function"
 
+        it "should have default options", ->
+          domnit = new Domnit()
+          should.exist domnit.opt
+          domnit.opt.should.be.a "object"
+          should.exist domnit.opt.originalStyle
+          domnit.opt.originalStyle.should.equal "data-originalStyle"
+
   for format in ["-universal", "-node"]
     do (format) ->
       describe "Node loading domnit#{format}.js", ->
@@ -31,3 +38,10 @@ describe "Domnit Loading", ->
         it "should have Domnit#serialize", ->
           domnit = new Domnit()
           domnit.serialize.should.be.a "function"
+
+        it "should have default options", ->
+          domnit = new Domnit()
+          should.exist domnit.opt
+          domnit.opt.should.be.a "object"
+          should.exist domnit.opt.originalStyle
+          domnit.opt.originalStyle.should.equal "data-originalStyle"

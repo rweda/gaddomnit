@@ -1,3 +1,4 @@
+defaultsDeep = require "lodash.defaultsdeep"
 Promise = require "bluebird"
 ElementSerializer = require "./ElementSerializer"
 
@@ -9,7 +10,10 @@ class Domnit
   ###
   @param [Object] opt options for customizing Domnit's behavior.
   ###
-  constructor: (@opt) ->
+  constructor: (@opt={}) ->
+    defaultsDeep @opt,
+      originalStyle: "data-originalStyle"
+      originalSrc: "data-originalSrc"
 
   elementSerializer: ElementSerializer
 
