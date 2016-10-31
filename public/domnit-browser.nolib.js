@@ -2390,9 +2390,74 @@ ElementSerializer$1 = (function() {
 
 var ElementSerializer_1 = ElementSerializer$1;
 
+var ElementSerializer$2;
+var ScriptSerializer$1;
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+var hasProp = {}.hasOwnProperty;
+
+ElementSerializer$2 = ElementSerializer_1;
+
+
+/*
+Serializes `<script>` elements by removing the contents and moving the `src` attribute to `opt.originalSrc`
+ */
+
+ScriptSerializer$1 = (function(superClass) {
+  extend(ScriptSerializer, superClass);
+
+  function ScriptSerializer() {
+    return ScriptSerializer.__super__.constructor.apply(this, arguments);
+  }
+
+
+  /*
+  Moves the `src` attribute to the attribute specified by `opt.originalSrc`.
+   */
+
+  ScriptSerializer.prototype.moveSrc = function() {
+    if (this.el.hasAttribute("src")) {
+      this.el.setAttribute(this.opt.originalSrc, this.el.getAttribute("src"));
+      return this.el.removeAttribute("src");
+    }
+  };
+
+
+  /*
+  Removes the content of a script
+   */
+
+  ScriptSerializer.prototype.removeBody = function() {
+    if (this.el.hasAttribute("text")) {
+      this.el.removeAttribute("text");
+    }
+    if (this.el.hasAttribute("textContent")) {
+      this.el.removeAttribute("textContent");
+    }
+    return this.el.innerHTML = "";
+  };
+
+
+  /*
+  Makes sure that {ElementSerializer#toString} doesn't have an innerHTML with script contents.
+   */
+
+  ScriptSerializer.prototype.toString = function() {
+    ScriptSerializer.__super__.toString.call(this);
+    this.moveSrc();
+    this.removeBody();
+    return this.el.outerHTML;
+  };
+
+  return ScriptSerializer;
+
+})(ElementSerializer$2);
+
+var ScriptSerializer_1 = ScriptSerializer$1;
+
 var Domnit;
 var ElementSerializer;
 var Promise;
+var ScriptSerializer;
 var defaultsDeep;
 
 defaultsDeep = index;
@@ -2400,6 +2465,8 @@ defaultsDeep = index;
 Promise = bluebird;
 
 ElementSerializer = ElementSerializer_1;
+
+ScriptSerializer = ScriptSerializer_1;
 
 
 /*
@@ -2421,6 +2488,8 @@ Domnit = (function() {
 
   Domnit.prototype.elementSerializer = ElementSerializer;
 
+  Domnit.prototype.scriptSerializer = ScriptSerializer;
+
 
   /*
   Serialize an HTML tree into a string.
@@ -2438,7 +2507,7 @@ Domnit = (function() {
 
   Domnit.prototype.serialize = function(el) {
     var Serializer, child, children, customSerialize, i, len, ref, ref1;
-    customSerialize = el.tagName + "Serializer";
+    customSerialize = (el.tagName.toLowerCase()) + "Serializer";
     Serializer = (ref = this[customSerialize]) != null ? ref : this.elementSerializer;
     children = [];
     ref1 = el.children;
