@@ -2,9 +2,9 @@
   "name": "gaddomnit",
   "version": "0.0.0",
   "description": "Serialize the DOM into a standalone HTML file.",
-  "main": "public/gaddomnit.min.js",
+  "main": "public/gaddomnit-universal.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --compilers coffee:coffee-script/register"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,20 @@
   "bugs": {
     "url": "https://github.com/rweda/gaddomnit/issues"
   },
-  "homepage": "https://github.com/rweda/gaddomnit#readme"
+  "homepage": "https://github.com/rweda/gaddomnit#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "child-process-promise": "^2.1.3",
+    "coffee-script": "^1.11.1",
+    "requirejs": "^2.3.2",
+    "rollup": "^0.36.3",
+    "rollup-plugin-coffee-script": "^1.1.0",
+    "rollup-plugin-commonjs": "^5.0.5",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-uglify": "^1.0.1",
+    "underscore": "^1.8.3"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.6"
+  }
 }

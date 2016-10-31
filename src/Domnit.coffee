@@ -1,3 +1,5 @@
+Promise = require "bluebird"
+
 ###
 Serializes the DOM into a standalone HTML file.
 ###
