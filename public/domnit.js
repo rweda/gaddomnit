@@ -7929,12 +7929,6 @@ ScriptSerializer$1 = (function(superClass) {
    */
 
   ScriptSerializer.prototype.removeBody = function() {
-    if (this.el.hasAttribute("text")) {
-      this.el.removeAttribute("text");
-    }
-    if (this.el.hasAttribute("textContent")) {
-      this.el.removeAttribute("textContent");
-    }
     return this.el.innerHTML = "";
   };
 
@@ -7956,8 +7950,51 @@ ScriptSerializer$1 = (function(superClass) {
 
 var ScriptSerializer_1 = ScriptSerializer$1;
 
+var ElementSerializer$3;
+var LinkSerializer$1;
+var extend$1 = function(child, parent) { for (var key in parent) { if (hasProp$1.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+var hasProp$1 = {}.hasOwnProperty;
+
+ElementSerializer$3 = ElementSerializer_1;
+
+
+/*
+Serializes `<link>` elements by removing the contents and moving the `href` attribute to `opt.linkHref`
+ */
+
+LinkSerializer$1 = (function(superClass) {
+  extend$1(LinkSerializer, superClass);
+
+  function LinkSerializer() {
+    return LinkSerializer.__super__.constructor.apply(this, arguments);
+  }
+
+
+  /*
+  Moves the `href` attribute to the attribute specified by `opt.linkHref`.
+   */
+
+  LinkSerializer.prototype.moveHref = function() {
+    if (this.el.hasAttribute("href")) {
+      this.el.setAttribute(this.opt.linkHref, this.el.getAttribute("href"));
+      return this.el.removeAttribute("href");
+    }
+  };
+
+  LinkSerializer.prototype.update = function() {
+    LinkSerializer.__super__.update.call(this);
+    return this.moveHref();
+  };
+
+  return LinkSerializer;
+
+})(ElementSerializer$3);
+
+var LinkSerializer_1 = LinkSerializer$1;
+
 var Domnit;
 var ElementSerializer;
+var LinkSerializer;
 var Promise$1;
 var ScriptSerializer;
 var defaultsDeep;
@@ -7969,6 +8006,8 @@ Promise$1 = bluebird_1;
 ElementSerializer = ElementSerializer_1;
 
 ScriptSerializer = ScriptSerializer_1;
+
+LinkSerializer = LinkSerializer_1;
 
 
 /*
@@ -7984,13 +8023,16 @@ Domnit = (function() {
     this.opt = opt != null ? opt : {};
     defaultsDeep(this.opt, {
       originalStyle: "data-originalStyle",
-      originalSrc: "data-originalSrc"
+      originalSrc: "data-originalSrc",
+      linkHref: "data-originalHref"
     });
   }
 
   Domnit.prototype.elementSerializer = ElementSerializer;
 
   Domnit.prototype.scriptSerializer = ScriptSerializer;
+
+  Domnit.prototype.linkSerializer = LinkSerializer;
 
 
   /*

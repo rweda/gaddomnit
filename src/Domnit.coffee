@@ -2,6 +2,7 @@ defaultsDeep = require "lodash.defaultsdeep"
 Promise = require "bluebird"
 ElementSerializer = require "./ElementSerializer"
 ScriptSerializer = require "./ScriptSerializer"
+LinkSerializer = require "./LinkSerializer"
 
 ###
 Serializes the DOM into a standalone HTML file.
@@ -15,10 +16,13 @@ class Domnit
     defaultsDeep @opt,
       originalStyle: "data-originalStyle"
       originalSrc: "data-originalSrc"
+      linkHref: "data-originalHref"
 
   elementSerializer: ElementSerializer
 
   scriptSerializer: ScriptSerializer
+
+  linkSerializer: LinkSerializer
 
   ###
   Serialize an HTML tree into a string.
