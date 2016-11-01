@@ -8075,6 +8075,8 @@ Domnit = (function() {
     });
   }
 
+  Domnit.ElementSerializer = ElementSerializer;
+
   Domnit.prototype.elementSerializer = ElementSerializer;
 
   Domnit.prototype.scriptSerializer = ScriptSerializer;

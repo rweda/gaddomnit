@@ -19,6 +19,8 @@ class Domnit
       originalSrc: "data-originalSrc"
       linkHref: "data-originalHref"
 
+  @ElementSerializer = ElementSerializer
+
   elementSerializer: ElementSerializer
 
   scriptSerializer: ScriptSerializer
