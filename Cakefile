@@ -111,7 +111,7 @@ docs = (opts) ->
       replace
         regex: "v[0-9]+\.[0-9]+\.[0-9]+(?:-(?:[0-9A-Za-z-]\.?)+)?"
         replacement: "v#{require("./package.json").version}"
-        paths: ['doc/']
+        paths: ['docs/']
         recursive: yes
         include: '*.html'
     .error (err) ->
