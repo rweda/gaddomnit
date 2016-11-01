@@ -3,7 +3,7 @@ Serialize the DOM into a standalone HTML file.
 
 [![Gad Domnit! on NPM](https://img.shields.io/npm/v/gaddomnit.svg)](https://www.npmjs.com/package/gaddomnit)
 [![Travis CI Build](https://img.shields.io/travis/rweda/gaddomnit.svg)](https://travis-ci.org/rweda/gaddomnit)
-[![MIT Licensed](https://img.shields.io/github/license/rweda/gaddomnit.svg?style=plastic)](https://github.com/rweda/gaddomnit/blob/master/LICENSE)
+[![MIT Licensed](https://img.shields.io/github/license/rweda/gaddomnit.svg)](https://github.com/rweda/gaddomnit/blob/master/LICENSE)
 
 If you've ever wanted to save an exact copy of a webpage, Gad Domnit is for you.
 Gad Domnit serializes the exact content on a webpage, retaining an inspectable DOM.
