@@ -103,7 +103,7 @@ build = (opts) ->
 
 docs = (opts) ->
   Promise
-    .resolve exec "$(npm bin)/codo --name 'Gad Domnit!' --title 'Gad Domnit Documentation' --private --readme README.md ./src"
+    .resolve exec "$(npm bin)/codo --name 'Gad Domnit!' --title 'Gad Domnit Documentation' --private --readme README.md ./src --output ./docs"
     .then (res) ->
       console.log res.stderr
       console.log res.stdout
