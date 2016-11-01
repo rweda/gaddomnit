@@ -36,7 +36,47 @@
       <div id='filecontents'>
         <h1 id="gad-domnit-">Gad Domnit!</h1><p>Serialize the DOM into a standalone HTML file.</p><p><a href="https://www.npmjs.com/package/gaddomnit"><img src="https://img.shields.io/npm/v/gaddomnit.svg" alt="Gad Domnit! on NPM"></a>
 <a href="https://travis-ci.org/rweda/gaddomnit"><img src="https://img.shields.io/travis/rweda/gaddomnit.svg" alt="Travis CI Build"></a>
-<a href="https://github.com/rweda/gaddomnit/blob/master/LICENSE"><img src="https://img.shields.io/github/license/rweda/gaddomnit.svg?style=plastic" alt="MIT Licensed"></a></p><h2 id="installation">Installation</h2><p>Install <code>gaddomnit</code> via <a href="https://www.npmjs.com/">NPM</a> or directly from <a href="http://rawgit.com/">RawGit</a>:</p><pre><code class="lang-html">&lt;script src=&quot;https://cdn.rawgit.com/rweda/gaddomnit/v0.0.1/public/domnit-universal.min.js&quot;&gt;&lt;/script&gt;
+<a href="https://github.com/rweda/gaddomnit/blob/master/LICENSE"><img src="https://img.shields.io/github/license/rweda/gaddomnit.svg?style=plastic" alt="MIT Licensed"></a></p><p>If you&#39;ve ever wanted to save an exact copy of a webpage, Gad Domnit is for you.
+Gad Domnit serializes the exact content on a webpage, retaining an inspectable DOM.</p><h2 id="features">Features</h2><p><strong>Removes Dependencies</strong> All dynamic resources (<code>&lt;script&gt;</code>, <code>&lt;link&gt;</code>) are changed to prevent them from modifying the
+document.</p><table>
+<thead>
+<tr>
+<th>DOM</th>
+<th>Serialized</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;script src=&quot;main.js&quot;&gt;&lt;/script&gt;</code></td>
+<td><code>&lt;script data-originalSrc=&quot;main.js&quot;&gt;&lt;/script&gt;</code></td>
+</tr>
+</tbody>
+</table><p><strong>Computes Style</strong> The style of each element is computed and saved, ensuring that content is styled the same when
+opened.</p><table>
+<thead>
+<tr>
+<th>DOM</th>
+<th>Serialized</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;style&gt;div {height: 2em;}&lt;/style&gt; &lt;div style=&quot;width: 50%&quot;&gt;&lt;/div&gt;</code></td>
+<td><code>&lt;style&gt;&lt;/style&gt; &lt;div style=&quot;height: 2em; width: 50%;&quot; data-originalStyle=&quot;width: 50%;&quot;&gt;&lt;/div&gt;</code></td>
+</tr>
+</tbody>
+</table><p><strong>Extendable</strong> Domnit is written in modular, object-oriented code.  The existing functionality can be easily changed,
+and new modifications can be added.</p><pre><code class="lang-coffee">Domnit = require &quot;gaddomnit&quot;
+ElementSerializer = Domnit.ElementSerializer
+count = 0
+class DivSerializer extends ElementSerializer
+  update: -&gt;
+    super()
+    this.el.addAttribute &quot;data-count&quot;, ++count
+
+class MySerializer extends Domnit
+  divSerializer: DivSerializer
+</code></pre><p>(Yes, that&#39;s a complete example.)</p><h2 id="installation">Installation</h2><p>Install <code>gaddomnit</code> via <a href="https://www.npmjs.com/">NPM</a> or directly from <a href="http://rawgit.com/">RawGit</a>:</p><pre><code class="lang-html">&lt;script src=&quot;https://cdn.rawgit.com/rweda/gaddomnit/v0.0.0/public/domnit-universal.min.js&quot;&gt;&lt;/script&gt;
 </code></pre><p>The <code>universal</code> build should work as a standalone script, via RequireJS, or via CommonJS/NPM.
 It bundles all of the dependencies, and should work out of the box.</p><p>Alternatively, specify <code>-browser</code> to only get RequireJS syntax, <code>-node</code> for only CommonJS, or no suffix at all to get
 a raw script without any loader.</p><p>Add <code>.nolib</code> immediately after the syntax specification to load dependencies via RequireJS/CommonJS (or browser globals

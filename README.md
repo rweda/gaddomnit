@@ -5,6 +5,42 @@ Serialize the DOM into a standalone HTML file.
 [![Travis CI Build](https://img.shields.io/travis/rweda/gaddomnit.svg)](https://travis-ci.org/rweda/gaddomnit)
 [![MIT Licensed](https://img.shields.io/github/license/rweda/gaddomnit.svg?style=plastic)](https://github.com/rweda/gaddomnit/blob/master/LICENSE)
 
+If you've ever wanted to save an exact copy of a webpage, Gad Domnit is for you.
+Gad Domnit serializes the exact content on a webpage, retaining an inspectable DOM.
+
+## Features
+
+**Removes Dependencies** All dynamic resources (`<script>`, `<link>`) are changed to prevent them from modifying the
+document.
+
+| DOM | Serialized |
+| --- | ---------- |
+| `<script src="main.js"></script>` | `<script data-originalSrc="main.js"></script>` |
+
+**Computes Style** The style of each element is computed and saved, ensuring that content is styled the same when
+opened.
+
+| DOM | Serialized |
+| --- | ---------- |
+| `<style>div {height: 2em;}</style> <div style="width: 50%"></div>` | `<style></style> <div style="height: 2em; width: 50%;" data-originalStyle="width: 50%;"></div>` |
+
+**Extendable** Domnit is written in modular, object-oriented code.  The existing functionality can be easily changed,
+and new modifications can be added.
+
+```coffee
+Domnit = require "gaddomnit"
+ElementSerializer = Domnit.ElementSerializer
+count = 0
+class DivSerializer extends ElementSerializer
+  update: ->
+    super()
+    this.el.addAttribute "data-count", ++count
+
+class MySerializer extends Domnit
+  divSerializer: DivSerializer
+```
+(Yes, that's a complete example.)
+
 ## Installation
 
 Install `gaddomnit` via [NPM](https://www.npmjs.com/) or directly from [RawGit](http://rawgit.com/):
