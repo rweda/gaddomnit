@@ -129,7 +129,7 @@ Render API documentation via Codo.
 ###
 docsCodo = (opts) ->
   Promise
-    .resolve exec "$(npm bin)/codo --name 'Gad Domnit!' --title 'Gad Domnit Documentation' --private --readme README.md ./src --output ./docs"
+    .resolve exec "$(npm bin)/codo --name 'Gad Domnit!' --title 'Gad Domnit Documentation' --private --readme README.md ./src --output ./docs -- Changelog"
     .then (res) ->
       console.log res.stderr
       console.log res.stdout
