@@ -8,6 +8,10 @@ commonjs = require "rollup-plugin-commonjs"
 coffee = require "rollup-plugin-coffee-script"
 nodeResolve = require "rollup-plugin-node-resolve"
 uglify = require "rollup-plugin-uglify"
+fs = Promise.promisifyAll require "fs-extra"
+globAsync = Promise.promisify require "glob"
+
+blade = Promise.promisifyAll require "blade"
 
 option '', '--no-browser', 'Disable targeting the browser (and AMD)'
 option '', '--no-node', "Disable targeting Node.js (and CommonJS)"
@@ -84,7 +88,9 @@ buildFormat = (opts, format, ext, paths, moduleName=null) ->
     tasks.push roller({paths, skip}).then (bundle) ->
       bundle.write {moduleName, globals, banner, format, dest: "public/domnit#{ext}.nolib.min.js"}
 
+_build = null
 build = (opts) ->
+  return _build if _build
   tasks = []
   unless opts["no-browser"]
     tasks.push buildFormat opts, 'amd', '-browser', browserPaths
@@ -94,14 +100,34 @@ build = (opts) ->
     tasks.push buildFormat opts, 'iife', '', null, 'Domnit'
   unless opts["no-universal"]
     tasks.push buildFormat opts, 'umd', '-universal', browserPaths, 'Domnit'
-  Promise
+  _build = Promise
     .all tasks
     .then ->
       console.log "Compiled successfully."
     .catch (err) ->
       console.log "Error while compiling: #{err}"
 
-docs = (opts) ->
+###
+Render a single blade demonstration file into to the HTML docs.
+###
+demoDoc = (opts, file) ->
+  blade
+    .renderFileAsync file, {}
+    .then (html) ->
+      fs.writeFileAsync file.replace("demo", "docs/demo").replace("blade", "html"), html
+
+###
+Render all of the demonstration files into the built docs.
+###
+docsDemo = (opts) ->
+  globAsync "#{__dirname}/demo/*.blade"
+    .map (file) ->
+      demoDoc opts, file
+
+###
+Render API documentation via Codo.
+###
+docsCodo = (opts) ->
   Promise
     .resolve exec "$(npm bin)/codo --name 'Gad Domnit!' --title 'Gad Domnit Documentation' --private --readme README.md ./src --output ./docs"
     .then (res) ->
@@ -116,3 +142,14 @@ docs = (opts) ->
         include: '*.html'
     .error (err) ->
       console.log "Error while updating docs: #{err}"
+
+###
+Copy the build output for the docs.
+###
+docsBuilt = (opts) ->
+  build(opts)
+    .then ->
+      fs.copyAsync "#{__dirname}/public", "#{__dirname}/docs/public", {clobber: yes}
+
+docs = (opts) ->
+  Promise.join docsDemo(opts), docsCodo(opts), docsBuilt(opts)
