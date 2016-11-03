@@ -12,6 +12,12 @@ class Domnit
 
   ###
   @param [Object] opt options for customizing Domnit's behavior.
+  @option opt [String] originalStyle an attribute to move `style` property to for all elements.
+    Defaults to `data-originalStyle`.
+  @option opt [String] originalSrc an attribute to move the `src` attribute for `script` elements.
+    Defaults to `data-originalSrc`.
+  @option opt [String] linkHref an attribute to move the `href` attribute for `link` elements.
+    Defaults to `data-originalHref`.
   ###
   constructor: (@opt={}) ->
     defaultsDeep @opt,
