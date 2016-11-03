@@ -27,7 +27,7 @@ class ElementSerializer
     if @el.currentStyle
       @el.setAttribute "style", @el.currentStyle
     else
-      style = getComputedStyle @el
+      style = getComputedStyle @originalElement
       for prop in style
         @el.style[prop] = style[prop]
 

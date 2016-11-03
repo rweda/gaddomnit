@@ -1,5 +1,5 @@
 /*
-Gad Domnit v0.0.0
+Gad Domnit v0.1.0
 Copyright 2016 Redwood EDA.  See https://github.com/rweda/gaddomnit#readme for LICENSE.
 */
 define(function () { 'use strict';
@@ -7818,7 +7818,7 @@ ElementSerializer$1 = (function() {
     if (this.el.currentStyle) {
       return this.el.setAttribute("style", this.el.currentStyle);
     } else {
-      style = getComputedStyle(this.el);
+      style = getComputedStyle(this.originalElement);
       results = [];
       for (j = 0, len = style.length; j < len; j++) {
         prop = style[j];
