@@ -2,6 +2,7 @@
 
 ### Modified
 - Moved `jsdom` to the `devDependencies` section.
+- Improved performance of non-`useBrowserStyle` requests
 
 ## [0.2.0] - 2016-11-04
 

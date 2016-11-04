@@ -29,12 +29,15 @@ class ElementSerializer
   serializeStyle: ->
     if @el.currentStyle
       @el.setAttribute "style", @originalElement.currentStyle
+    else if @opt.useBrowserStyle
+      DefaultStyle
+        .get @el.tagName
+        .then (def) =>
+          style = getComputedStyle @originalElement
+          for prop in style when style[prop] isnt def[prop]
+            @el.style[prop] = style[prop]
     else
-      defaults = if @opt.useBrowserStyle then DefaultStyle.get(@el.tagName) else Promise.resolve {}
-      defaults.then (def) =>
-        style = getComputedStyle @originalElement
-        for prop in style when style[prop] isnt def[prop]
-          @el.style[prop] = style[prop]
+      @el.style.cssText = getComputedStyle(@originalElement).cssText
 
   ###
   Modifies `@el` with common modifications.  Intended to be extended by other classes.

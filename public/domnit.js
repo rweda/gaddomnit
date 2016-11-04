@@ -7896,12 +7896,10 @@ ElementSerializer$1 = (function() {
    */
 
   ElementSerializer.prototype.serializeStyle = function() {
-    var defaults;
     if (this.el.currentStyle) {
       return this.el.setAttribute("style", this.originalElement.currentStyle);
-    } else {
-      defaults = this.opt.useBrowserStyle ? DefaultStyle.get(this.el.tagName) : Promise$2.resolve({});
-      return defaults.then((function(_this) {
+    } else if (this.opt.useBrowserStyle) {
+      return DefaultStyle.get(this.el.tagName).then((function(_this) {
         return function(def) {
           var j, len, prop, results, style;
           style = getComputedStyle(_this.originalElement);
@@ -7915,6 +7913,8 @@ ElementSerializer$1 = (function() {
           return results;
         };
       })(this));
+    } else {
+      return this.el.style.cssText = getComputedStyle(this.originalElement).cssText;
     }
   };
 
