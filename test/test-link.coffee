@@ -15,10 +15,7 @@ link = """
 domnit = (window) ->
   new window.Domnit({originalStyle: 'data-originalStyle'}).serialize window.document.body
 
-###
-Skipping, as jsdom seems to strip out the <link> element.
-###
-describe.skip "<link> Serialization", ->
+describe "<link> Serialization", ->
   dom = jsdom
     .envAsync link, ["#{__dirname}/../public/domnit.js"],
       virtualConsole: virtualConsole
