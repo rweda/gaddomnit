@@ -23,6 +23,7 @@
     "coffee-script": "^1.11.1",
     "fs-extra": "^1.0.0",
     "glob": "^7.1.1",
+    "jsdom": "^9.8.3",
     "mocha": "^3.1.2",
     "replace": "^0.3.0",
     "requirejs": "^2.3.2",
@@ -35,7 +36,6 @@
   },
   "dependencies": {
     "bluebird": "^3.4.6",
-    "jsdom": "^9.8.3",
     "lodash.defaultsdeep": "^4.6.0"
   }
 }

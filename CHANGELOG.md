@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Modified
+- Moved `jsdom` to the `devDependencies` section.
+
 ## [0.2.0] - 2016-11-04
 
 ### Added
