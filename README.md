@@ -73,13 +73,15 @@ domnit.serialize(document.body);
 // -> "<body style='display: block'>...</body>"
 ```
 
-After loading Domnit, create a new Domnit object, optionally passing an object with configuration options.
+After loading Domnit, create a new Domnit object, optionally passing an object with
+[configuration options][Domnit#constructor].
 Then call [`Domnit#serialize`][Domnit#serialize] with an [`Element`](https://developer.mozilla.org/en-US/docs/Web/API/Element) to
 serialize, which returns a standalone string representing the element and all it's children.
 
 See [`Domnit`][Domnit] class documentation for the full API as well as information on extending Domnit's features.
 
 [Domnit]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/Domnit.html
+[Domnit#constructor]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/Domnit.html#constructor-dynamic
 [Domnit#serialize]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/Domnit.html#serialize-dynamic
 [demo:bootstrap]: https://rweda.github.io/gaddomnit/demo/bootstrap.html
 [Bootstrap]: http://getbootstrap.com/
