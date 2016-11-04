@@ -54,7 +54,9 @@ class ElementSerializer
     [interwoven, lastPos] = [[], 0]
     for child, i in @originalElement.children
       next = child.textContent
-      continue unless next
+      unless next
+        interwoven.push @children[i]
+        continue
       pos = fullText.indexOf next, lastPos
       if pos > 0
         interwoven.push fullText.substring lastPos, pos

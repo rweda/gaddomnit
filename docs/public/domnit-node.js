@@ -7946,6 +7946,7 @@ ElementSerializer$1 = (function() {
       child = ref1[i];
       next = child.textContent;
       if (!next) {
+        interwoven.push(this.children[i]);
         continue;
       }
       pos = fullText.indexOf(next, lastPos);

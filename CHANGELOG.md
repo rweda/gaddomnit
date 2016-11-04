@@ -14,3 +14,4 @@
 
 ### Modified
 - **[breaking]** Changed [Domnit#update] to return a promise
+- Bugfix: [ElementSerializer#interweaveText] skipped elements that didn't have `innerHTML`
