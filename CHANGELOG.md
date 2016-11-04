@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Added
+- [Domnit#constructor] takes `style` option, to skip evaluating invisible tags.
+
 ### Modified
 - Moved `jsdom` to the `devDependencies` section.
 - Improved performance of non-`useBrowserStyle` requests
