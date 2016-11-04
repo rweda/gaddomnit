@@ -2682,6 +2682,8 @@ Domnit = (function() {
   @option opt [Object] style Control if tags are skipped for styling.  Set `{"tagname": false}` to skip evaluating the
     tag to include a `style` attribute.  By default, `head`, `title`, `link`, `meta`, `style`, and `script` tags are
     ignored.  Set the entire object to `false` to disable all checking.
+  @option opt [Function] filter Called with each element.  Return `true` to include the element in the output, otherwise
+    it and all decendents are excluded from the output.
    */
   function Domnit(opt) {
     this.opt = opt != null ? opt : {};
@@ -2697,7 +2699,8 @@ Domnit = (function() {
         meta: false,
         style: false,
         script: false
-      }
+      },
+      filter: null
     });
   }
 
@@ -2728,6 +2731,9 @@ Domnit = (function() {
 
   Domnit.prototype.serialize = function(el) {
     var Serializer, child, children, customSerialize, i, len, ref, ref1;
+    if (this.opt.filter && this.opt.filter(el)) {
+      return "";
+    }
     customSerialize = (el.tagName.toLowerCase()) + "Serializer";
     Serializer = (ref = this[customSerialize]) != null ? ref : this.elementSerializer;
     children = [];
