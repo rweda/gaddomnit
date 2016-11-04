@@ -22,6 +22,9 @@ class Domnit
     Produces a much smaller output, but takes longer to lookup each style, and the output will slightly differ if
     rendered on different browsers.
     Defaults to `true`.
+  @option opt [Object] style Control if tags are skipped for styling.  Set `{"tagname": false}` to skip evaluating the
+    tag to include a `style` attribute.  By default, `head`, `title`, `link`, `meta`, `style`, and `script` tags are
+    ignored.  Set the entire object to `false` to disable all checking.
   ###
   constructor: (@opt={}) ->
     defaultsDeep @opt,
@@ -29,6 +32,13 @@ class Domnit
       originalSrc: "data-originalSrc"
       linkHref: "data-originalHref"
       useBrowserStyle: yes
+      style:
+        head: no
+        title: no
+        link: no
+        meta: no
+        style: no
+        script: no
 
   @ElementSerializer = ElementSerializer
 

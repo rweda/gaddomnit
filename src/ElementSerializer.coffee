@@ -27,6 +27,9 @@ class ElementSerializer
   Sets the `style` to the full computed value.
   ###
   serializeStyle: ->
+    if @opt.style?[@el.tagName.toLowerCase()] is no
+      @el.removeAttribute "style"
+      return Promise.resolve()
     if @el.currentStyle
       @el.setAttribute "style", @originalElement.currentStyle
     else if @opt.useBrowserStyle

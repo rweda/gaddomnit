@@ -2318,11 +2318,10 @@ DefaultStyle$1 = (function() {
 
   DefaultStyle.getNoCache = function(tagName) {
     return new Promise$2(function(resolve, reject) {
-      var computed, element, frameDocument, i, iframe, j, len, prop, ref, ref1, style;
-      ref = [], iframe = ref[0], element = ref[1], style = ref[2];
+      var computed, element, frameDocument, i, iframe, j, len, prop, ref, style;
       iframe = document.createElement("iframe");
       document.body.appendChild(iframe);
-      frameDocument = (ref1 = iframe.contentDocument) != null ? ref1 : iframe.contentWindow.document;
+      frameDocument = (ref = iframe.contentDocument) != null ? ref : iframe.contentWindow.document;
       element = frameDocument.createElement(tagName);
       frameDocument.body.appendChild(element);
       style = {};
@@ -2392,6 +2391,11 @@ ElementSerializer$1 = (function() {
    */
 
   ElementSerializer.prototype.serializeStyle = function() {
+    var ref;
+    if (((ref = this.opt.style) != null ? ref[this.el.tagName.toLowerCase()] : void 0) === false) {
+      this.el.removeAttribute("style");
+      return Promise$1.resolve();
+    }
     if (this.el.currentStyle) {
       return this.el.setAttribute("style", this.originalElement.currentStyle);
     } else if (this.opt.useBrowserStyle) {
@@ -2675,6 +2679,9 @@ Domnit = (function() {
     Produces a much smaller output, but takes longer to lookup each style, and the output will slightly differ if
     rendered on different browsers.
     Defaults to `true`.
+  @option opt [Object] style Control if tags are skipped for styling.  Set `{"tagname": false}` to skip evaluating the
+    tag to include a `style` attribute.  By default, `head`, `title`, `link`, `meta`, `style`, and `script` tags are
+    ignored.  Set the entire object to `false` to disable all checking.
    */
   function Domnit(opt) {
     this.opt = opt != null ? opt : {};
@@ -2682,7 +2689,15 @@ Domnit = (function() {
       originalStyle: "data-originalStyle",
       originalSrc: "data-originalSrc",
       linkHref: "data-originalHref",
-      useBrowserStyle: true
+      useBrowserStyle: true,
+      style: {
+        head: false,
+        title: false,
+        link: false,
+        meta: false,
+        style: false,
+        script: false
+      }
     });
   }
 

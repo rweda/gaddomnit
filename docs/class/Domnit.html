@@ -165,6 +165,16 @@
       &mdash;
       <span class='desc'>if <code>true</code>, filters out <code>style</code> attributes that are the default for the element. Produces a much smaller output, but takes longer to lookup each style, and the output will slightly differ if rendered on different browsers. Defaults to <code>true</code>. </span>
     </li>
+    <li>
+      <span class='name'>style</span>
+      <span class='type'>
+        (
+          <tt>Object</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>Control if tags are skipped for styling.  Set <code>{&quot;tagname&quot;: false}</code> to skip evaluating the tag to include a <code>style</code> attribute.  By default, <code>head</code>, <code>title</code>, <code>link</code>, <code>meta</code>, <code>style</code>, and <code>script</code> tags are ignored.  Set the entire object to <code>false</code> to disable all checking. </span>
+    </li>
   </ul>
 </div>
   </div>
