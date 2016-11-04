@@ -39,7 +39,7 @@ inline = """
 """
 
 domnit = (window) ->
-  new window.Domnit({originalStyle: 'data-originalStyle'}).serialize window.document.body
+  new window.Domnit({originalStyle: 'data-originalStyle', useBrowserStyle: no}).serialize window.document.body
 
 describe "Basic HTML Serialization", ->
 
