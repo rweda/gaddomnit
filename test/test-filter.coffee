@@ -12,8 +12,23 @@ html = """
   <div id="container">
     <div class="child"></div>
   </div>
+  <div id="invisible", style="visibility: hidden;">
+    <div id="invisible2"></div>
+  </div>
+  <div id="dispNone", style="display: none;">
+    <div id="dispNone2"></div>
+  </div>
 </body>
 """
+
+init = (opts) ->
+  dom = jsdom
+    .envAsync html, ["#{__dirname}/../public/domnit.js"],
+      virtualConsole: virtualConsole
+      features:
+        FetchExternalResources: no
+    .then (window) ->
+      new window.Domnit(opts).serialize window.document.body
 
 domnit = (opts) ->
   (window) ->
@@ -22,43 +37,71 @@ domnit = (opts) ->
 describe "Filtering", ->
 
   describe "the entire document", ->
-    dom = jsdom
-      .envAsync html, ["#{__dirname}/../public/domnit.js"],
-        virtualConsole: virtualConsole
-        features:
-          FetchExternalResources: no #["link"]
-      .then (window) ->
-        opts =
-          filter: (el) -> el.tagName is "BODY"
-        new window.Domnit(opts).serialize window.document.body
+    dom = init
+      filter: (el) -> el.tagName isnt "BODY"
 
     it "should return an empty string", ->
-      dom.then (serialized) ->
-        serialized.should.equal ""
+      dom.then (s) -> s.should.equal ""
 
   describe "an element with children", ->
-    dom = jsdom
-      .envAsync html, ["#{__dirname}/../public/domnit.js"],
-        virtualConsole: virtualConsole
-        features:
-          FetchExternalResources: no #["link"]
-      .then (window) ->
-        opts =
-          filter: (el) -> el.id is "container"
-        new window.Domnit(opts).serialize window.document.body
+    dom = init
+      filter: (el) -> el.id isnt "container"
 
     it "should return the container", ->
-      dom.then (serialized) ->
-        serialized.should.include "<body"
+      dom.then (s) -> s.should.include "<body"
 
     it "should include other contents", ->
-      dom.then (serialized) ->
-        serialized.should.include "<link"
+      dom.then (s) -> s.should.include "<link"
 
     it "should exclude the parent", ->
-      dom.then (serialized) ->
-        serialized.should.not.include "id=\"container\""
+      dom.then (s) -> s.should.not.include "id=\"container\""
 
     it "should exclude children", ->
-      dom.then (serialized) ->
-        serialized.should.not.include "id=\"child\""
+      dom.then (s) -> s.should.not.include "class=\"child\""
+
+describe "Filter Shortcuts", ->
+
+  describe "with default options", ->
+    dom = init()
+
+    it "should include elements with 'visibility: hidden;'", ->
+      dom.then (s) -> s.should.include "id=\"invisible\""
+
+    it "should include the children of elements with 'visibility: hidden;'", ->
+      dom.then (s) -> s.should.include "id=\"invisible2\""
+
+    it "should include elements with 'display: none;'", ->
+      dom.then (s) -> s.should.include "id=\"dispNone\""
+
+    it "should include children of elements with 'display: none;'", ->
+      dom.then (s) -> s.should.include "id=\"dispNone2\""
+
+  describe "with filterHidden", ->
+    dom = init {filterHidden: yes}
+
+    it "should not include elements with 'visibility: hidden;'", ->
+      dom.then (s) -> s.should.not.include "id=\"invisible\""
+
+    it "should not include the children of elements with 'visibility: hidden;'", ->
+      dom.then (s) -> s.should.not.include "id=\"invisible2\""
+
+    it "should include elements with 'display: none;'", ->
+      dom.then (s) -> s.should.include "id=\"dispNone\""
+
+    it "should include children of elements with 'display: none;'", ->
+      dom.then (s) -> s.should.include "id=\"dispNone2\""
+
+  describe "with filterDisplayNone", ->
+    dom = init {filterDisplayNone: yes}
+
+    it "should include elements with 'visibility: hidden;'", ->
+      dom.then (s) -> s.should.include "id=\"invisible\""
+
+    it "should include the children of elements with 'visibility: hidden;'", ->
+      dom.then (s) -> s.should.include "id=\"invisible2\""
+
+    it "should not include elements with 'display: none;'", ->
+      dom.then (s) -> s.should.not.include "id=\"dispNone\""
+
+    it "should not include children of elements with 'display: none;'", ->
+      dom.then (s) -> s.should.not.include "id=\"dispNone2\""

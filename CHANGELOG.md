@@ -1,7 +1,8 @@
 ## Unreleased
 
 ### Added
-- [Domnit#constructor] takes `style` option, to skip evaluating invisible tags.
+- [Domnit][Domnit#constructor] takes `style` option, to skip evaluating invisible tags.
+- [Domnit][Domnit#constructor] takes `filter`, `filterHidden` and `filterDisplayNone` options.
 
 ### Modified
 - Moved `jsdom` to the `devDependencies` section.

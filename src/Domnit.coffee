@@ -27,6 +27,10 @@ class Domnit
     ignored.  Set the entire object to `false` to disable all checking.
   @option opt [Function] filter Called with each element.  Return `true` to include the element in the output, otherwise
     it and all decendents are excluded from the output.
+  @option opt [Boolean] filterHidden if `true`, filters out elements that have `visibility: hidden;`, along with their
+    children.  Defaults to `false`.
+  @option opt [Boolean] filterDisplayNone if `true`, filters out elements that have `display: none;`, along with their
+    children.  Defaults to `false`.
   ###
   constructor: (@opt={}) ->
     defaultsDeep @opt,
@@ -42,6 +46,8 @@ class Domnit
         style: no
         script: no
       filter: null
+      filterHidden: no
+      filterDisplayNone: no
 
   @ElementSerializer = ElementSerializer
 
@@ -52,6 +58,32 @@ class Domnit
   linkSerializer: LinkSerializer
 
   styleSerializer: StyleSerializer
+
+  ###
+  Determines if the element matches the filter, and should be included in the document
+  @param [Element] the element to test
+  @return {Boolean} `true` if the element passes the filter
+  ###
+  passFilter: (el) ->
+    not @opt.filter or @opt.filter(el)
+
+  ###
+  Determines if the element doesn't match a filter against elements with `visibility: hidden;` and should be included in
+  the document.
+  @param [Element] the element to test
+  @return {Boolean} `true` if the element passes the filter
+  ###
+  passFilterHidden: (el) ->
+    not @opt.filterHidden or getComputedStyle(el).visibility isnt "hidden"
+
+  ###
+  Determines if the element doesn't match a filter against elements with `display: none;` and should be included in the
+  document.
+  @param [Element] the element to test
+  @return {Boolean} `true` if the element passes the filter
+  ###
+  passDisplayNone: (el) ->
+    not @opt.filterDisplayNone or getComputedStyle(el).display isnt "none"
 
   ###
   Serialize an HTML tree into a string.
@@ -67,7 +99,7 @@ class Domnit
       });
   ###
   serialize: (el) ->
-    return "" if @opt.filter and @opt.filter(el)
+    return "" unless @passFilter(el) and @passFilterHidden(el) and @passDisplayNone(el)
     customSerialize = "#{el.tagName.toLowerCase()}Serializer"
     Serializer = @[customSerialize] ? @elementSerializer
     children = []
