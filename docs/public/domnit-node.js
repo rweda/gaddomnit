@@ -1,5 +1,5 @@
 /*
-Gad Domnit v0.1.0
+Gad Domnit v0.2.0
 Copyright 2016 Redwood EDA.  See https://github.com/rweda/gaddomnit#readme for LICENSE.
 */
 'use strict';
