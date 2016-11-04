@@ -13,5 +13,9 @@
 - Documented [Domnit#constructor] options
 
 ### Modified
-- **[breaking]** Changed [Domnit#update] to return a promise
+- **[breaking]** Changed [ElementSerializer#update] to return a promise
 - Bugfix: [ElementSerializer#interweaveText] skipped elements that didn't have `innerHTML`
+
+[Domnit#constructor]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/Domnit.html#constructor-dynamic
+[ElementSerializer#update]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/ElementSerializer.html#update-dynamic
+[ElementSerializer#interweaveText]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/ElementSerializer.html#interweaveText-dynamic
