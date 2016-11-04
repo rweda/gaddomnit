@@ -8183,6 +8183,12 @@ Domnit = (function() {
   @option opt [Object] style Control if tags are skipped for styling.  Set `{"tagname": false}` to skip evaluating the
     tag to include a `style` attribute.  By default, `head`, `title`, `link`, `meta`, `style`, and `script` tags are
     ignored.  Set the entire object to `false` to disable all checking.
+  @option opt [Function] filter Called with each element.  Return `true` to include the element in the output, otherwise
+    it and all decendents are excluded from the output.
+  @option opt [Boolean] filterHidden if `true`, filters out elements that have `visibility: hidden;`, along with their
+    children.  Defaults to `false`.
+  @option opt [Boolean] filterDisplayNone if `true`, filters out elements that have `display: none;`, along with their
+    children.  Defaults to `false`.
    */
   function Domnit(opt) {
     this.opt = opt != null ? opt : {};
@@ -8198,7 +8204,10 @@ Domnit = (function() {
         meta: false,
         style: false,
         script: false
-      }
+      },
+      filter: null,
+      filterHidden: false,
+      filterDisplayNone: false
     });
   }
 
@@ -8211,6 +8220,41 @@ Domnit = (function() {
   Domnit.prototype.linkSerializer = LinkSerializer;
 
   Domnit.prototype.styleSerializer = StyleSerializer;
+
+
+  /*
+  Determines if the element matches the filter, and should be included in the document
+  @param [Element] the element to test
+  @return {Boolean} `true` if the element passes the filter
+   */
+
+  Domnit.prototype.passFilter = function(el) {
+    return !this.opt.filter || this.opt.filter(el);
+  };
+
+
+  /*
+  Determines if the element doesn't match a filter against elements with `visibility: hidden;` and should be included in
+  the document.
+  @param [Element] the element to test
+  @return {Boolean} `true` if the element passes the filter
+   */
+
+  Domnit.prototype.passFilterHidden = function(el) {
+    return !this.opt.filterHidden || getComputedStyle(el).visibility !== "hidden";
+  };
+
+
+  /*
+  Determines if the element doesn't match a filter against elements with `display: none;` and should be included in the
+  document.
+  @param [Element] the element to test
+  @return {Boolean} `true` if the element passes the filter
+   */
+
+  Domnit.prototype.passDisplayNone = function(el) {
+    return !this.opt.filterDisplayNone || getComputedStyle(el).display !== "none";
+  };
 
 
   /*
@@ -8229,6 +8273,9 @@ Domnit = (function() {
 
   Domnit.prototype.serialize = function(el) {
     var Serializer, child, children, customSerialize, i, len, ref, ref1;
+    if (!(this.passFilter(el) && this.passFilterHidden(el) && this.passDisplayNone(el))) {
+      return "";
+    }
     customSerialize = (el.tagName.toLowerCase()) + "Serializer";
     Serializer = (ref = this[customSerialize]) != null ? ref : this.elementSerializer;
     children = [];

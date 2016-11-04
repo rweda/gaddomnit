@@ -86,6 +86,44 @@
       <ul class='summary'>
   <li>
     <span class='signature'>
+      <a href='#passFilter-dynamic'>
+        #
+(Boolean)
+<b>passFilter</b><span>(el)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Determines if the element matches the filter, and should be included in the document 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#passFilterHidden-dynamic'>
+        #
+(Boolean)
+<b>passFilterHidden</b><span>(el)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Determines if the element doesn&#39;t match a filter against elements with <code>visibility: hidden;</code> and should be included in the document.
+
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#passDisplayNone-dynamic'>
+        #
+(Boolean)
+<b>passDisplayNone</b><span>(el)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Determines if the element doesn&#39;t match a filter against elements with <code>display: none;</code> and should be included in the document.
+
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#serialize-dynamic'>
         #
 (Promise&lt;String&gt;)
@@ -175,12 +213,155 @@
       &mdash;
       <span class='desc'>Control if tags are skipped for styling.  Set <code>{&quot;tagname&quot;: false}</code> to skip evaluating the tag to include a <code>style</code> attribute.  By default, <code>head</code>, <code>title</code>, <code>link</code>, <code>meta</code>, <code>style</code>, and <code>script</code> tags are ignored.  Set the entire object to <code>false</code> to disable all checking. </span>
     </li>
+    <li>
+      <span class='name'>filter</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>Called with each element.  Return <code>true</code> to include the element in the output, otherwise it and all decendents are excluded from the output. </span>
+    </li>
+    <li>
+      <span class='name'>filterHidden</span>
+      <span class='type'>
+        (
+          <tt>Boolean</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>if <code>true</code>, filters out elements that have <code>visibility: hidden;</code>, along with their children.  Defaults to <code>false</code>. </span>
+    </li>
+    <li>
+      <span class='name'>filterDisplayNone</span>
+      <span class='type'>
+        (
+          <tt>Boolean</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>if <code>true</code>, filters out elements that have <code>display: none;</code>, along with their children.  Defaults to <code>false</code>. </span>
+    </li>
   </ul>
 </div>
   </div>
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='passFilter-dynamic'>
+      #
+(Boolean)
+<b>passFilter</b><span>(el)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Determines if the element matches the filter, and should be included in the document</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (
+          <tt>Element</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>element to test </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Boolean</tt>
+      )
+      &mdash;
+      <span class='desc'><code>true</code> if the element passes the filter </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='passFilterHidden-dynamic'>
+      #
+(Boolean)
+<b>passFilterHidden</b><span>(el)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Determines if the element doesn&#39;t match a filter against elements with <code>visibility: hidden;</code> and should be included in
+the document.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (
+          <tt>Element</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>element to test </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Boolean</tt>
+      )
+      &mdash;
+      <span class='desc'><code>true</code> if the element passes the filter </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='passDisplayNone-dynamic'>
+      #
+(Boolean)
+<b>passDisplayNone</b><span>(el)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Determines if the element doesn&#39;t match a filter against elements with <code>display: none;</code> and should be included in the
+document.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (
+          <tt>Element</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>element to test </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Boolean</tt>
+      )
+      &mdash;
+      <span class='desc'><code>true</code> if the element passes the filter </span>
+    </li>
+  </ul>
+</div>
+  </div>
   <div class='method_details'>
     <p class='signature' id='serialize-dynamic'>
       #
