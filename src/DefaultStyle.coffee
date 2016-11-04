@@ -27,24 +27,19 @@ class DefaultStyle
   @return [Promise<CSStyleDeclaration>] resolves to the default styles for the element selected
   ###
   @getNoCache = (tagName) ->
-    iframe = document.createElement "iframe"
-    document.body.appendChild iframe
-    frameDocument = iframe.contentDocument || iframe.contentWindow.document
-    element = frameDocument.createElement tagName
-    frameDocument.body.appendChild element
-    style = null
-    Promise
-      .delay 0
-      .then ->
-        style = {}
-        computed = element.ownerDocument.defaultView.getComputedStyle element
-        for prop, i in computed
-          style[i] = prop
-          style[prop] = computed[prop]
-        style.cssText = computed.cssText
-        Promise.delay 0
-      .then ->
-        document.body.removeChild iframe
-        style
+    new Promise (resolve, reject) ->
+      iframe = document.createElement "iframe"
+      document.body.appendChild iframe
+      frameDocument = iframe.contentDocument ? iframe.contentWindow.document
+      element = frameDocument.createElement tagName
+      frameDocument.body.appendChild element
+      style = {}
+      computed = element.ownerDocument.defaultView.getComputedStyle element
+      for prop, i in computed
+        style[i] = prop
+        style[prop] = computed[prop]
+      style.cssText = computed.cssText
+      document.body.removeChild iframe
+      resolve style
 
 module.exports = DefaultStyle

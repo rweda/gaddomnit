@@ -3,6 +3,7 @@
 ### Modified
 - Moved `jsdom` to the `devDependencies` section.
 - Improved performance of non-`useBrowserStyle` requests
+- Improved performance of [DefaultStyle.getNoCache] by removing delays and starting promise earlier to improve caching.
 
 ## [0.2.0] - 2016-11-04
 
@@ -25,3 +26,4 @@
 [Domnit#constructor]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/Domnit.html#constructor-dynamic
 [ElementSerializer#update]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/ElementSerializer.html#update-dynamic
 [ElementSerializer#interweaveText]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/ElementSerializer.html#interweaveText-dynamic
+[DefaultStyle.getNoCache]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/DefaultStyle.html#getNoCache-dynamic

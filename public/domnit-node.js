@@ -7817,15 +7817,14 @@ DefaultStyle$1 = (function() {
    */
 
   DefaultStyle.getNoCache = function(tagName) {
-    var element, frameDocument, iframe, style;
-    iframe = document.createElement("iframe");
-    document.body.appendChild(iframe);
-    frameDocument = iframe.contentDocument || iframe.contentWindow.document;
-    element = frameDocument.createElement(tagName);
-    frameDocument.body.appendChild(element);
-    style = null;
-    return Promise$3.delay(0).then(function() {
-      var computed, i, j, len, prop;
+    return new Promise$3(function(resolve, reject) {
+      var computed, element, frameDocument, i, iframe, j, len, prop, ref, ref1, style;
+      ref = [], iframe = ref[0], element = ref[1], style = ref[2];
+      iframe = document.createElement("iframe");
+      document.body.appendChild(iframe);
+      frameDocument = (ref1 = iframe.contentDocument) != null ? ref1 : iframe.contentWindow.document;
+      element = frameDocument.createElement(tagName);
+      frameDocument.body.appendChild(element);
       style = {};
       computed = element.ownerDocument.defaultView.getComputedStyle(element);
       for (i = j = 0, len = computed.length; j < len; i = ++j) {
@@ -7834,10 +7833,8 @@ DefaultStyle$1 = (function() {
         style[prop] = computed[prop];
       }
       style.cssText = computed.cssText;
-      return Promise$3.delay(0);
-    }).then(function() {
       document.body.removeChild(iframe);
-      return style;
+      return resolve(style);
     });
   };
 
