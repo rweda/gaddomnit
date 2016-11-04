@@ -41,6 +41,10 @@ class MySerializer extends Domnit
 ```
 (Yes, that's a complete example.)
 
+## Demonstration
+
+**[bootstrap.html][demo:bootstrap]** A demonstration using components from the [Bootstrap] library.
+
 ## Installation
 
 Install `gaddomnit` via [NPM](https://www.npmjs.com/) or directly from [RawGit](http://rawgit.com/):
@@ -77,3 +81,5 @@ See [`Domnit`][Domnit] class documentation for the full API as well as informati
 
 [Domnit]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/Domnit.html
 [Domnit#serialize]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/Domnit.html#serialize-dynamic
+[demo:bootstrap]: https://rweda.github.io/gaddomnit/demo/bootstrap.html
+[Bootstrap]: http://getbootstrap.com/
