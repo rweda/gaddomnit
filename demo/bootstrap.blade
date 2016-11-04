@@ -1,5 +1,6 @@
 body
-  link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
+  link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
+  link(rel="stylesheet", href="https:////cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/atom-one-dark.min.css")
   .container
     .row
       .col-xs-6
@@ -18,7 +19,8 @@ body
     iframe(style="width: 100%; height: 50%")
   script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js", integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7", crossorigin="anonymous")
   script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", crossorigin="anonymous")
-  //-script(src="https://cdn.rawgit.com/rweda/gaddomnit/v0.1.0/public/domnit-universal.js")
+  script(src="https://cdn.rawgit.com/beautify-web/js-beautify/v1.6.4/js/lib/beautify-html.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js")
   script(src="../public/domnit-universal.js")
   :coffeescript
     domnit = new Domnit()
@@ -26,6 +28,11 @@ body
       domnit
         .serialize $("body")[0]
         .then (html) ->
-          $("pre code").text html
+          $("pre code").text html_beautify html,
+            wrap_attributes: "force"
+            brace_style: "expand"
+            wrap_line_length: 140
+          $("pre code").each (i, block) ->
+            hljs.highlightBlock block
           $("iframe").contents().find("body")[0].outerHTML = html
     setTimeout serialize, 2000

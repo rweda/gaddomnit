@@ -140,7 +140,7 @@ docsCodo = (opts) ->
         replacement: "v#{require("./package.json").version}"
         paths: ['docs/']
         recursive: yes
-        include: '*.html'
+        include: '*.md.html'
     .error (err) ->
       console.log "Error while updating docs: #{err}"
 
