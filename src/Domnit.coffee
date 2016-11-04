@@ -18,12 +18,17 @@ class Domnit
     Defaults to `data-originalSrc`.
   @option opt [String] linkHref an attribute to move the `href` attribute for `link` elements.
     Defaults to `data-originalHref`.
+  @option opt [Boolean] useBrowserStyle if `true`, filters out `style` attributes that are the default for the element.
+    Produces a much smaller output, but takes longer to lookup each style, and the output will slightly differ if
+    rendered on different browsers.
+    Defaults to `true`.
   ###
   constructor: (@opt={}) ->
     defaultsDeep @opt,
       originalStyle: "data-originalStyle"
       originalSrc: "data-originalSrc"
       linkHref: "data-originalHref"
+      useBrowserStyle: yes
 
   @ElementSerializer = ElementSerializer
 

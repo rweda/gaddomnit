@@ -15,6 +15,7 @@ class LinkSerializer extends ElementSerializer
 
   update: ->
     super()
-    @moveHref()
+      .then =>
+        @moveHref()
 
 module.exports = LinkSerializer

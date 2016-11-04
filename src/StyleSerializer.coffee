@@ -17,7 +17,8 @@ class StyleSerializer extends ElementSerializer
   ###
   toString: ->
     super()
-    @removeBody()
-    @el.outerHTML
+      .then =>
+        @removeBody()
+        @el.outerHTML
 
 module.exports = StyleSerializer

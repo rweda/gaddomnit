@@ -87,6 +87,7 @@ buildFormat = (opts, format, ext, paths, moduleName=null) ->
   unless opts["no-partial"]
     tasks.push roller({paths, skip}).then (bundle) ->
       bundle.write {moduleName, globals, banner, format, dest: "public/domnit#{ext}.nolib.min.js"}
+  Promise.all tasks
 
 _build = null
 build = (opts) ->

@@ -1,3 +1,6 @@
+DefaultStyle = require "./DefaultStyle"
+Promise = require "bluebird"
+
 ###
 A base class for serializing elements.  Intended to be extendable.
 ###
@@ -25,14 +28,17 @@ class ElementSerializer
   ###
   serializeStyle: ->
     if @el.currentStyle
-      @el.setAttribute "style", @el.currentStyle
+      @el.setAttribute "style", @originalElement.currentStyle
     else
-      style = getComputedStyle @originalElement
-      for prop in style
-        @el.style[prop] = style[prop]
+      defaults = if @opt.useBrowserStyle then DefaultStyle.get(@el.tagName) else Promise.resolve {}
+      defaults.then (def) =>
+        style = getComputedStyle @originalElement
+        for prop in style when style[prop] isnt def[prop]
+          @el.style[prop] = style[prop]
 
   ###
   Modifies `@el` with common modifications.  Intended to be extended by other classes.
+  @return {Promise} resolves when done updating
   ###
   update: ->
     @saveStyle()
@@ -63,10 +69,12 @@ class ElementSerializer
   @return {String} the serialized element
   ###
   toString: ->
-    @update()
-    name = @el.tagName
-    attrs = [name]
-    @el.innerHTML = @interweaveText().join("")
-    @el.outerHTML
+    Promise
+      .resolve @update()
+      .then =>
+        name = @el.tagName
+        attrs = [name]
+        @el.innerHTML = @interweaveText().join("")
+        @el.outerHTML
 
 module.exports = ElementSerializer

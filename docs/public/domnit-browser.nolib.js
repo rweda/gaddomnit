@@ -2273,11 +2273,92 @@ function stubFalse() {
 module.exports = defaultsDeep;
 });
 
+var DefaultStyle$1;
+var Promise$2;
+
+Promise$2 = bluebird;
+
+
+/*
+Determines the default browser style for elements.
+See [CSSStyleDeclaration](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration) for the return type.
+ */
+
+DefaultStyle$1 = (function() {
+
+  /*
+  @property [Object<String, Promise<CSSStyleDeclaration>>] Keep a copy of each element's style to produce a faster
+  lookup.
+   */
+  function DefaultStyle() {}
+
+  DefaultStyle.stored = {};
+
+
+  /*
+  Fetch the default browser style for the given element, using a cache to speed up multiple requests.
+  @param [String] tagName the tagName of an element to lookup
+  @return [Promise<CSStyleDeclaration>] resolves to the default styles for the element selected
+   */
+
+  DefaultStyle.get = function(tagName) {
+    if (this.stored[tagName]) {
+      return this.stored[tagName];
+    }
+    return this.stored = this.getNoCache(tagName);
+  };
+
+
+  /*
+  Fetch the default browser style for the given element, without any cache
+  @param [String] tagName the tagName of an element to lookup
+  @return [Promise<CSStyleDeclaration>] resolves to the default styles for the element selected
+   */
+
+  DefaultStyle.getNoCache = function(tagName) {
+    var element, frameDocument, iframe, style;
+    iframe = document.createElement("iframe");
+    document.body.appendChild(iframe);
+    frameDocument = iframe.contentDocument || iframe.contentWindow.document;
+    element = frameDocument.createElement(tagName);
+    frameDocument.body.appendChild(element);
+    style = null;
+    return Promise$2.delay(0).then(function() {
+      var computed, i, j, len, prop;
+      style = {};
+      computed = element.ownerDocument.defaultView.getComputedStyle(element);
+      for (i = j = 0, len = computed.length; j < len; i = ++j) {
+        prop = computed[i];
+        style[i] = prop;
+        style[prop] = computed[prop];
+      }
+      style.cssText = computed.cssText;
+      return Promise$2.delay(0);
+    }).then(function() {
+      document.body.removeChild(iframe);
+      return style;
+    });
+  };
+
+  return DefaultStyle;
+
+})();
+
+var DefaultStyle_1 = DefaultStyle$1;
+
+var DefaultStyle;
+var ElementSerializer$1;
+var Promise$1;
+var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+DefaultStyle = DefaultStyle_1;
+
+Promise$1 = bluebird;
+
+
 /*
 A base class for serializing elements.  Intended to be extendable.
  */
-var ElementSerializer$1;
-var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 ElementSerializer$1 = (function() {
 
@@ -2313,23 +2394,32 @@ ElementSerializer$1 = (function() {
    */
 
   ElementSerializer.prototype.serializeStyle = function() {
-    var j, len, prop, results, style;
+    var defaults;
     if (this.el.currentStyle) {
-      return this.el.setAttribute("style", this.el.currentStyle);
+      return this.el.setAttribute("style", this.originalElement.currentStyle);
     } else {
-      style = getComputedStyle(this.originalElement);
-      results = [];
-      for (j = 0, len = style.length; j < len; j++) {
-        prop = style[j];
-        results.push(this.el.style[prop] = style[prop]);
-      }
-      return results;
+      defaults = this.opt.useBrowserStyle ? DefaultStyle.get(this.el.tagName) : Promise$1.resolve({});
+      return defaults.then((function(_this) {
+        return function(def) {
+          var j, len, prop, results, style;
+          style = getComputedStyle(_this.originalElement);
+          results = [];
+          for (j = 0, len = style.length; j < len; j++) {
+            prop = style[j];
+            if (style[prop] !== def[prop]) {
+              results.push(_this.el.style[prop] = style[prop]);
+            }
+          }
+          return results;
+        };
+      })(this));
     }
   };
 
 
   /*
   Modifies `@el` with common modifications.  Intended to be extended by other classes.
+  @return {Promise} resolves when done updating
    */
 
   ElementSerializer.prototype.update = function() {
@@ -2376,12 +2466,15 @@ ElementSerializer$1 = (function() {
    */
 
   ElementSerializer.prototype.toString = function() {
-    var attrs, name;
-    this.update();
-    name = this.el.tagName;
-    attrs = [name];
-    this.el.innerHTML = this.interweaveText().join("");
-    return this.el.outerHTML;
+    return Promise$1.resolve(this.update()).then((function(_this) {
+      return function() {
+        var attrs, name;
+        name = _this.el.tagName;
+        attrs = [name];
+        _this.el.innerHTML = _this.interweaveText().join("");
+        return _this.el.outerHTML;
+      };
+    })(this));
   };
 
   return ElementSerializer;
@@ -2436,10 +2529,13 @@ ScriptSerializer$1 = (function(superClass) {
    */
 
   ScriptSerializer.prototype.toString = function() {
-    ScriptSerializer.__super__.toString.call(this);
-    this.moveSrc();
-    this.removeBody();
-    return this.el.outerHTML;
+    return ScriptSerializer.__super__.toString.call(this).then((function(_this) {
+      return function() {
+        _this.moveSrc();
+        _this.removeBody();
+        return _this.el.outerHTML;
+      };
+    })(this));
   };
 
   return ScriptSerializer;
@@ -2480,8 +2576,11 @@ LinkSerializer$1 = (function(superClass) {
   };
 
   LinkSerializer.prototype.update = function() {
-    LinkSerializer.__super__.update.call(this);
-    return this.moveHref();
+    return LinkSerializer.__super__.update.call(this).then((function(_this) {
+      return function() {
+        return _this.moveHref();
+      };
+    })(this));
   };
 
   return LinkSerializer;
@@ -2524,9 +2623,12 @@ StyleSerializer$1 = (function(superClass) {
    */
 
   StyleSerializer.prototype.toString = function() {
-    StyleSerializer.__super__.toString.call(this);
-    this.removeBody();
-    return this.el.outerHTML;
+    return StyleSerializer.__super__.toString.call(this).then((function(_this) {
+      return function() {
+        _this.removeBody();
+        return _this.el.outerHTML;
+      };
+    })(this));
   };
 
   return StyleSerializer;
@@ -2570,13 +2672,18 @@ Domnit = (function() {
     Defaults to `data-originalSrc`.
   @option opt [String] linkHref an attribute to move the `href` attribute for `link` elements.
     Defaults to `data-originalHref`.
+  @option opt [Boolean] useBrowserStyle if `true`, filters out `style` attributes that are the default for the element.
+    Produces a much smaller output, but takes longer to lookup each style, and the output will slightly differ if
+    rendered on different browsers.
+    Defaults to `true`.
    */
   function Domnit(opt) {
     this.opt = opt != null ? opt : {};
     defaultsDeep(this.opt, {
       originalStyle: "data-originalStyle",
       originalSrc: "data-originalSrc",
-      linkHref: "data-originalHref"
+      linkHref: "data-originalHref",
+      useBrowserStyle: true
     });
   }
 

@@ -24,8 +24,9 @@ class ScriptSerializer extends ElementSerializer
   ###
   toString: ->
     super()
-    @moveSrc()
-    @removeBody()
-    @el.outerHTML
+      .then =>
+        @moveSrc()
+        @removeBody()
+        @el.outerHTML
 
 module.exports = ScriptSerializer
