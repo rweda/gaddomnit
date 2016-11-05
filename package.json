@@ -1,6 +1,6 @@
 {
   "name": "gaddomnit",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Serialize the DOM into a standalone HTML file.",
   "main": "public/domnit-universal.nolib.min.js",
   "scripts": {
