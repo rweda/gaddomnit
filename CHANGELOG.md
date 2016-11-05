@@ -1,4 +1,4 @@
-## Unreleased
+## [0.3.0] - 2016-11-04
 
 ### Added
 - [Domnit][Domnit#constructor] takes `style` option, to skip evaluating invisible tags.
