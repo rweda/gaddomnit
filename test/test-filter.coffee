@@ -30,10 +30,6 @@ init = (opts) ->
     .then (window) ->
       new window.Domnit(opts).serialize window.document.body
 
-domnit = (opts) ->
-  (window) ->
-    new window.Domnit(opts).serialize window.document.body
-
 describe "Filtering", ->
 
   describe "the entire document", ->

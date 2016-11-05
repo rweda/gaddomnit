@@ -62,6 +62,30 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#defaultStyleFilter-dynamic'>
+        #
+(Promise&lt;Function&gt;)
+<b>defaultStyleFilter</b><span>()</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Create a function that determines if the element&#39;s attribute is the same as the default attribute. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#inheritFilter-dynamic'>
+        #
+(Function)
+<b>inheritFilter</b><span>()</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Create a function that determines if the element&#39;s attribute should be inherited from it&#39;s parent. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#serializeStyle-dynamic'>
         #
 (void)
@@ -115,7 +139,7 @@
     <p class='signature' id='constructor-dynamic'>
       #
 (void)
-<b>constructor</b><span>(el, children, opt)</span>
+<b>constructor</b><span>(el, children, opt, isRoot)</span>
       <br>
     </p>
     <div class='tags'>
@@ -151,6 +175,16 @@
       &mdash;
       <span class='desc'>options to configure the action of gaddomnit. </span>
     </li>
+    <li>
+      <span class='name'>isRoot</span>
+      <span class='type'>
+        (
+          <tt>Boolean</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'><code>true</code> if this is the root element in the document. </span>
+    </li>
   </ul>
 </div>
   </div>
@@ -169,6 +203,54 @@
   <p>Saves the <code>style</code> attribute under the name defined by <code>opt.originalStyle</code>.</p>
 </div>
 <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='defaultStyleFilter-dynamic'>
+      #
+(Promise&lt;Function&gt;)
+<b>defaultStyleFilter</b><span>()</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Create a function that determines if the element&#39;s attribute is the same as the default attribute.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Promise&lt;Function&gt;</tt>
+      )
+      &mdash;
+      <span class='desc'><code>Boolean fn(CSSStyleDeclaration style, String prop)</code> <code>false</code> if the element shouldn&#39;t inherit the default style.  <code>true</code> if the property can be omitted. </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='inheritFilter-dynamic'>
+      #
+(Function)
+<b>inheritFilter</b><span>()</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Create a function that determines if the element&#39;s attribute should be inherited from it&#39;s parent.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Function</tt>
+      )
+      &mdash;
+      <span class='desc'><code>Boolean,String fn(CSSStyleDeclaration style, String prop)</code> <code>false</code> if the element shouldn&#39;t inherit it&#39;s parent&#39;s style.  <code>true</code> if the style should be inherited explicitly.  <code>&quot;silent&quot;</code> if the attribute should inherit it&#39;s parent without any style. </span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
