@@ -3,6 +3,7 @@
 ### Added
 - [Domnit][Domnit#constructor] takes `style` option, to skip evaluating invisible tags.
 - [Domnit][Domnit#constructor] takes `filter`, `filterHidden` and `filterDisplayNone` options.
+- [Domnit][Domnit#constructor] takes `inheritStyle` and `inheritSilent` options
 
 ### Modified
 - Moved `jsdom` to the `devDependencies` section.

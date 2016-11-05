@@ -2346,6 +2346,7 @@ var DefaultStyle;
 var ElementSerializer$1;
 var Promise$1;
 var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 DefaultStyle = DefaultStyle_1;
 
@@ -2362,11 +2363,13 @@ ElementSerializer$1 = (function() {
   @param [Element] el the element that will be serialized.
   @param [Array<String>] children the serialized children
   @param [Object] opt options to configure the action of gaddomnit.
+  @param [Boolean] isRoot `true` if this is the root element in the document.
    */
-  function ElementSerializer(el, children, opt) {
+  function ElementSerializer(el, children, opt, isRoot) {
     this.el = el;
     this.children = children;
     this.opt = opt;
+    this.isRoot = isRoot;
     this.saveStyle = bind(this.saveStyle, this);
     this.originalElement = this.el;
     this.el = this.el.cloneNode(false);
@@ -2386,28 +2389,85 @@ ElementSerializer$1 = (function() {
 
 
   /*
+  Create a function that determines if the element's attribute is the same as the default attribute.
+  @return {Promise<Function>} `Boolean fn(CSSStyleDeclaration style, String prop)` `false` if the element shouldn't
+    inherit the default style.  `true` if the property can be omitted.
+   */
+
+  ElementSerializer.prototype.defaultStyleFilter = function() {
+    if (!this.opt.useBrowserStyle) {
+      return Promise$1.resolve(function() {
+        return false;
+      });
+    }
+    return DefaultStyle.get(this.el.tagName).then((function(_this) {
+      return function(def) {
+        return Promise$1.resolve(function(style, prop) {
+          return style[prop] === def[prop];
+        });
+      };
+    })(this));
+  };
+
+
+  /*
+  Create a function that determines if the element's attribute should be inherited from it's parent.
+  @return {Function} `Boolean,String fn(CSSStyleDeclaration style, String prop)` `false` if the element shouldn't
+    inherit it's parent's style.  `true` if the style should be inherited explicitly.  `"silent"` if the attribute
+    should inherit it's parent without any style.
+   */
+
+  ElementSerializer.prototype.inheritFilter = function() {
+    var parent;
+    if (!(this.opt.inheritStyle && !this.isRoot)) {
+      return (function() {
+        return false;
+      });
+    }
+    parent = getComputedStyle(this.originalElement.parentElement);
+    return (function(_this) {
+      return function(style, prop) {
+        if (!(_this.opt.inheritStyle === true || indexOf.call(_this.opt.inheritStyle, prop) >= 0)) {
+          return false;
+        }
+        if (style[prop] !== parent[prop]) {
+          return false;
+        }
+        if (_this.opt.inheritSilent && indexOf.call(_this.opt.inheritSilent, prop) >= 0) {
+          return "silent";
+        }
+        return true;
+      };
+    })(this);
+  };
+
+
+  /*
   Sets the `style` to the full computed value.
    */
 
   ElementSerializer.prototype.serializeStyle = function() {
-    var ref;
+    var inherit, ref, style;
     if (((ref = this.opt.style) != null ? ref[this.el.tagName.toLowerCase()] : void 0) === false) {
       this.el.removeAttribute("style");
       return Promise$1.resolve();
     }
     if (this.el.currentStyle) {
       return this.el.setAttribute("style", this.originalElement.currentStyle);
-    } else if (this.opt.useBrowserStyle) {
-      return DefaultStyle.get(this.el.tagName).then((function(_this) {
+    } else if (this.opt.useBrowserStyle || this.opt.inheritStyle) {
+      style = getComputedStyle(this.originalElement);
+      inherit = this.inheritFilter();
+      return this.defaultStyleFilter().then((function(_this) {
         return function(def) {
-          var j, len, prop, results, style;
-          style = getComputedStyle(_this.originalElement);
+          var i, j, len, prop, results;
           results = [];
           for (j = 0, len = style.length; j < len; j++) {
             prop = style[j];
-            if (style[prop] !== def[prop]) {
-              results.push(_this.el.style[prop] = style[prop]);
+            i = inherit(style, prop);
+            if (def(style, prop) || i === "silent") {
+              continue;
             }
+            results.push(_this.el.style[prop] = i ? "inherit" : style[prop]);
           }
           return results;
         };
@@ -2687,6 +2747,17 @@ Domnit = (function() {
     children.  Defaults to `false`.
   @option opt [Boolean] filterDisplayNone if `true`, filters out elements that have `display: none;`, along with their
     children.  Defaults to `false`.
+  @option opt [Boolean, Array<String>] inheritStyle determines if styles should be inherited, instead of explicitly
+    listed in every node.  `yes` (the default) will use `[property]: inherit;` whenever a property is the same as it's
+    parent.  `no` will include every option in full.  Provide an array of properties (lower-case) that can be inherited.
+    All other properties will be listed in full.
+  @option opt [Array<String>] inheritSilent Optionally list CSS properties that can be inherited by default, and will be
+    excluded from the listed styles, instead of using `[property]: inherit;`.  If `inheritStyle` is disabled,
+    `inheritSilent` takes no effect.
+    Defaults to a potentially safe list.  See [StackOverflow](http://stackoverflow.com/a/5612360/666727) for al
+    attributes are considered inherited by the W3C (not guarenteed to be the behavior of every browser).
+    Default: `font-family`, `font-size`, `font-style`, `font-variant`, `font-weight`, `line-height`, `letter-spacing`,
+    `visibility`.
    */
   function Domnit(opt) {
     this.opt = opt != null ? opt : {};
@@ -2705,7 +2776,9 @@ Domnit = (function() {
       },
       filter: null,
       filterHidden: false,
-      filterDisplayNone: false
+      filterDisplayNone: false,
+      inheritStyle: true,
+      inheritSilent: ["font-family", "font-size", "font-style", "font-variant", "font-weight", "line-height", "letter-spacing", "visibility"]
     });
   }
 
@@ -2759,6 +2832,7 @@ Domnit = (function() {
   Serialize an HTML tree into a string.
   @param [Element] el the element to serialize, including all it's children.
   @return [Promise<String>] the serialized DOM
+  @param [Boolean] root `true` if the element being serialized is the root element in the document.
   
   @example Serialize the entire document, using jQuery to select `<html>`.
     var domnit = new Domnit();
@@ -2769,8 +2843,11 @@ Domnit = (function() {
       });
    */
 
-  Domnit.prototype.serialize = function(el) {
+  Domnit.prototype.serialize = function(el, root) {
     var Serializer, child, children, customSerialize, i, len, ref, ref1;
+    if (root == null) {
+      root = true;
+    }
     if (!(this.passFilter(el) && this.passFilterHidden(el) && this.passDisplayNone(el))) {
       return "";
     }
@@ -2780,12 +2857,12 @@ Domnit = (function() {
     ref1 = el.children;
     for (i = 0, len = ref1.length; i < len; i++) {
       child = ref1[i];
-      children.push(this.serialize(child));
+      children.push(this.serialize(child, false));
     }
     return Promise.all(children).then((function(_this) {
       return function(children) {
         var element;
-        element = new Serializer(el, children, _this.opt);
+        element = new Serializer(el, children, _this.opt, root);
         return element.toString();
       };
     })(this));

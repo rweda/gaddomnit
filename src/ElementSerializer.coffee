@@ -10,8 +10,9 @@ class ElementSerializer
   @param [Element] el the element that will be serialized.
   @param [Array<String>] children the serialized children
   @param [Object] opt options to configure the action of gaddomnit.
+  @param [Boolean] isRoot `true` if this is the root element in the document.
   ###
-  constructor: (@el, @children, @opt) ->
+  constructor: (@el, @children, @opt, @isRoot) ->
     @originalElement = @el
     @el = @el.cloneNode false
 
@@ -22,6 +23,32 @@ class ElementSerializer
     return unless @el.hasAttribute "style"
     @el.setAttribute @opt.originalStyle, @el.getAttribute("style")
 
+  ###
+  Create a function that determines if the element's attribute is the same as the default attribute.
+  @return {Promise<Function>} `Boolean fn(CSSStyleDeclaration style, String prop)` `false` if the element shouldn't
+    inherit the default style.  `true` if the property can be omitted.
+  ###
+  defaultStyleFilter: ->
+    return Promise.resolve(-> no) unless @opt.useBrowserStyle
+    DefaultStyle
+      .get @el.tagName
+      .then (def) =>
+        Promise.resolve (style, prop) -> style[prop] is def[prop]
+
+  ###
+  Create a function that determines if the element's attribute should be inherited from it's parent.
+  @return {Function} `Boolean,String fn(CSSStyleDeclaration style, String prop)` `false` if the element shouldn't
+    inherit it's parent's style.  `true` if the style should be inherited explicitly.  `"silent"` if the attribute
+    should inherit it's parent without any style.
+  ###
+  inheritFilter: ->
+    return (-> no) unless @opt.inheritStyle and not @isRoot
+    parent = getComputedStyle @originalElement.parentElement
+    (style, prop) =>
+      return no unless @opt.inheritStyle is yes or prop in @opt.inheritStyle
+      return no unless style[prop] is parent[prop]
+      return "silent" if @opt.inheritSilent and prop in @opt.inheritSilent
+      yes
 
   ###
   Sets the `style` to the full computed value.
@@ -32,13 +59,16 @@ class ElementSerializer
       return Promise.resolve()
     if @el.currentStyle
       @el.setAttribute "style", @originalElement.currentStyle
-    else if @opt.useBrowserStyle
-      DefaultStyle
-        .get @el.tagName
+    else if @opt.useBrowserStyle or @opt.inheritStyle
+      style = getComputedStyle @originalElement
+      inherit = @inheritFilter()
+      @defaultStyleFilter()
         .then (def) =>
-          style = getComputedStyle @originalElement
-          for prop in style when style[prop] isnt def[prop]
-            @el.style[prop] = style[prop]
+          for prop in style
+            i = inherit style, prop
+            if def(style, prop) or i is "silent"
+              continue
+            @el.style[prop] = if i then "inherit" else style[prop]
     else
       @el.style.cssText = getComputedStyle(@originalElement).cssText
 
