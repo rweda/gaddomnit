@@ -43,7 +43,9 @@ class MySerializer extends Domnit
 
 ## Demonstration
 
-**[bootstrap.html][demo:bootstrap]** A demonstration using components from the [Bootstrap] library.
+**[bootstrap.html][demo:bootstrap]** A demonstration or serialization using components from the [Bootstrap] library.
+
+**[codemirror.html][demo:codemirror]** A demonstration of using Domnit to debug a rendering issue when using the CodeMirror editor.
 
 ## Installation
 
@@ -84,4 +86,5 @@ See [`Domnit`][Domnit] class documentation for the full API as well as informati
 [Domnit#constructor]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/Domnit.html#constructor-dynamic
 [Domnit#serialize]: https://rweda.github.io/gaddomnit/#https://rweda.github.io/gaddomnit/class/Domnit.html#serialize-dynamic
 [demo:bootstrap]: https://rweda.github.io/gaddomnit/demo/bootstrap.html
+[demo:codemirror]: https://rweda.github.io/gaddomnit/demo/codemirror.html
 [Bootstrap]: http://getbootstrap.com/
