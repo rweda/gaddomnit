@@ -1,0 +1,126 @@
+!!!5
+html
+  head
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
+    link(rel="stylesheet", href="https:////cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/atom-one-dark.min.css")
+    title CodeMirror Loading Demo | Gad Domnit
+    :stylus
+      .outputControl:not(:checked) ~ pre
+        height: 5em
+  body
+    .container
+      .row
+        .col-xs-8.col-md-6
+          h1 CodeMirror Loading
+          p.lead
+            | Debugging using
+            <a(href="https://rweda.github.io/gaddomnit/") Gad Domnit
+          p
+            a>(href="http://codemirror.net/") CodeMirror
+            | has a rendering issue if it's initialized inside a container with
+            <code display: none;
+            | .  In dynamic sites which change the visibility of a
+            <code <div>
+            | , this rendering issue might be hard to replicate.
+          p
+            :markdown
+              The `<iframe>` on the right demonstrates this property.  50% of the time, CodeMirror is initialized inside
+              an invisible `<div>`, which is then made visible.  Otherwise, the `<div>` is made visible before
+              CodeMirror is initialized.  Click below to reload the `<iframe>`.
+          a.btn.btn-primary(href="#reload") Reload iframe
+        iframe#demo.col-xs-4.col-md-6(src="codemirror-live.html#random")
+      hr
+      .row
+        .col-xs-12.col-sm-8.col-md-6
+          p.lead
+            | When CodeMirror loads properly, the editor is visible, with line numbers to the left.
+        iframe#working.col-xs-12.col-sm-4.col-md-6(src="codemirror-live.html#working")
+      .row
+        .col-xs-12.col-sm-8.col-md-6
+          p.lead
+            | However, when CodeMirror's container is made visible after load, the screen is white.
+          p
+            :md
+              Clicking on the white `<div>` will make the editor appear, but the line numbers cover the first few
+              characters of the editor.
+        iframe#broken.col-xs-12.col-sm-4.col-md-6(src="codemirror-live.html#broken")
+      .row
+        .col-xs-12
+          p.lead
+            | Domnit enhances the bug report
+          p
+            :markdown
+              by including inspectable output, instead of just a screenshot.
+              Gad Domnit produced the content below from the examples above.  From the dynamic script, Domnit captured
+              a static HTML representation of exactly what was on screen, allowing the bug report to be repeatable.
+      .row#workingOutput
+        .col-xs-12.col-md-6
+          p.lead
+            | Properly loaded output
+          input.outputControl(type="checkbox")
+          span Display Full Output
+          pre
+            code
+        iframe.col-xs-12.col-md-6
+      .row#brokenOutput
+        .col-xs-12.col-md-6
+          p.lead
+            | Improperly loaded output
+          input.outputControl(type="checkbox")
+          span Display Full Output
+          pre
+            code
+        iframe.col-xs-12.col-md-6
+      .row
+        .col-xs-12
+          p.lead Comparable output
+          p
+            :markdown
+              The HTML generated above is compared, and will be displayed below.
+              The improperly loaded CodeMirror is displayed in red, while the correct output is in green.
+              This output could be used to debug CodeMirror's internals, see if our program using CodeMirror has issues,
+              or write unit tests checking the computed values to see how often these rendering issues occur.
+        .col-xs-12
+          pre#diff
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.4.6/bluebird.min.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js", integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7", crossorigin="anonymous")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", crossorigin="anonymous")
+    script(src="https://cdn.rawgit.com/beautify-web/js-beautify/v1.6.4/js/lib/beautify-html.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/3.0.1/diff.min.js")
+    script(src="../public/domnit-universal.js")
+    :coffeescript
+      $.fn.reload = ->
+        this.each ->
+          this.contentDocument.location.reload yes
+      $("[href='#reload']").click (e) ->
+        e.preventDefault()
+        $("#demo").reload()
+      serialize = (type) ->
+        domnit = new Domnit()
+        domnit
+          .serialize $("##{type}").contents().find(".container")[0]
+          .then (html) ->
+            html = html_beautify html,
+              wrap_attributes: "force"
+              brace_style: "expand"
+              wrap_line_length: 140
+              $("##{type}Output pre code").text html
+            $("##{type}Output pre code").each (i, block) ->
+              hljs.highlightBlock block
+            $("##{type}Output iframe").contents().find("body")[0].outerHTML = html
+            html
+      main = ->
+        Promise
+          .join serialize("working"), serialize("broken")
+          .delay 0
+          .then ([working, broken]) ->
+            diffAsync = Promise.promisify JsDiff.diffLines
+            diffAsync broken, working
+          .then (diff) ->
+            console.log diff
+            diff.forEach (part) ->
+              color = if part.added then "green" else if part.removed then "red" else "grey"
+              span = $("<span>").css("color", color).text part.value
+              $("#diff").append span
+      setTimeout main, 1000

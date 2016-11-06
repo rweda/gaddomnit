@@ -1,0 +1,36 @@
+html
+  head
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.min.css")
+  body
+    .container(style="display: none;")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js", integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7", crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/javascript/javascript.js")
+    :coffeescript
+      codemirror = ->
+        editor = CodeMirror $(".container")[0],
+          mode: "javascript"
+          lineNumbers: true
+        editor.setValue """
+          function add(x, y) {
+            return x + y;
+          }
+        """
+      show = ->
+        $(".container").css "display", "block"
+      random = ->
+        if Math.random() >= 0.5
+          codemirror()
+          show()
+        else
+          show()
+          codemirror()
+      switch window.location.hash.slice 1
+        when "working"
+          show()
+          codemirror()
+        when "broken"
+          codemirror()
+          show()
+        when "random" then random()
+        else random()

@@ -1,3 +1,8 @@
+## Unreleased
+
+### Added
+- CodeMirror demonstration
+
 ## [0.3.0] - 2016-11-04
 
 ### Added

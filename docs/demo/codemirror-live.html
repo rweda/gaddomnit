@@ -1,0 +1,46 @@
+<html><head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.min.css"/></head><body><div style="display: none;" class="container"></div><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/javascript/javascript.js"></script><script type="text/javascript">
+(function() {
+  var codemirror, random, show;
+
+  codemirror = function() {
+    var editor;
+    editor = CodeMirror($(".container")[0], {
+      mode: "javascript",
+      lineNumbers: true
+    });
+    return editor.setValue("function add(x, y) {\n  return x + y;\n}");
+  };
+
+  show = function() {
+    return $(".container").css("display", "block");
+  };
+
+  random = function() {
+    if (Math.random() >= 0.5) {
+      codemirror();
+      return show();
+    } else {
+      show();
+      return codemirror();
+    }
+  };
+
+  switch (window.location.hash.slice(1)) {
+    case "working":
+      show();
+      codemirror();
+      break;
+    case "broken":
+      codemirror();
+      show();
+      break;
+    case "random":
+      random();
+      break;
+    default:
+      random();
+  }
+
+}).call(this);
+
+</script></body></html>
