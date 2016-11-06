@@ -57,6 +57,10 @@ html
         .col-xs-12.col-md-6
           p.lead
             | Properly loaded output
+          p
+            :markdown
+              This output is a static snapshot in time.  It looks identical to the `iframe` above, but has none of the
+              CodeMirror scripts or stylesheets included.
           input.outputControl(type="checkbox")
           span Display Full Output
           pre
