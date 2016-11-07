@@ -8287,7 +8287,8 @@ Domnit = (function() {
       filterDisplayNone: false,
       inheritStyle: true,
       inheritSilent: ["font-family", "font-size", "font-style", "font-variant", "font-weight", "line-height", "letter-spacing", "visibility"],
-      concurrency: 2e308
+      concurrency: 2e308,
+      nonBlocking: true
     });
   }
 

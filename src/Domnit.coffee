@@ -66,6 +66,7 @@ class Domnit
       inheritSilent: ["font-family", "font-size", "font-style", "font-variant", "font-weight", "line-height",
         "letter-spacing", "visibility"]
       concurrency: Infinity
+      nonBlocking: yes
 
   @ElementSerializer = ElementSerializer
 
