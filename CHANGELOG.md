@@ -1,6 +1,6 @@
 ## Unreleased
 
-## [0.3.1] - 2016-11-04]
+## [0.3.1] - 2016-11-07
 
 ### Added
 - CodeMirror [demonstration][demo:codemirror]
