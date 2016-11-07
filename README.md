@@ -52,7 +52,7 @@ class MySerializer extends Domnit
 Install `gaddomnit` via [NPM](https://www.npmjs.com/) or directly from [RawGit](http://rawgit.com/):
 
 ```html
-<script src="https://cdn.rawgit.com/rweda/gaddomnit/v0.0.1/public/domnit-universal.min.js"></script>
+<script src="https://cdn.rawgit.com/rweda/gaddomnit/v0.3.1/public/domnit-universal.min.js"></script>
 ```
 
 The `universal` build should work as a standalone script, via RequireJS, or via CommonJS/NPM.
