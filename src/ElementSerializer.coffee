@@ -72,6 +72,12 @@ class ElementSerializer
     else
       @el.style.cssText = getComputedStyle(@originalElement).cssText
 
+  moveListeners: ->
+    return unless @opt.moveListeners
+    for attr in @el.attributes when attr.name.indexOf("on") is 0
+      @el.setAttribute @opt.moveListeners + attr.name, @el.getAttribute attr.name
+      @el.removeAttribute attr.name
+
   ###
   Modifies `@el` with common modifications.  Intended to be extended by other classes.
   @return {Promise} resolves when done updating

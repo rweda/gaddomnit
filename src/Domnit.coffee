@@ -45,6 +45,8 @@ class Domnit
   @option opt [Integer] concurrency Define how many serializations can occur concurrently.  Defaults to `Infinity`.
   @option opt [Boolean] nonBlocking If `true`, adds a 0ms delay to serialization, to allow other actions on the stack to
     occur.  If `false`, Domnit might not give up control until it's finished.  Defaults to `true`.
+  @option opt [Boolean, String] moveListeners If `false`, leaves all event listeners.  If `String`, moves `on[event]`
+    listeners to `moveListeners`+`on[event]`.  Defaults to `data-`.
   ###
   constructor: (@opt={}) ->
     defaultsDeep @opt,
@@ -67,6 +69,7 @@ class Domnit
         "letter-spacing", "visibility"]
       concurrency: Infinity
       nonBlocking: yes
+      moveListeners: "data-"
 
   @ElementSerializer = ElementSerializer
 

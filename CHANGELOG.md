@@ -1,5 +1,8 @@
 ## Unreleased
 
+### Added
+- [Domnit][Domnit#constructor] takes `moveListeners` option, moving all `on[event]` listeners to an alternative field.
+
 ## [0.3.1] - 2016-11-07
 
 ### Added

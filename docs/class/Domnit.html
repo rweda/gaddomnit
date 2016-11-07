@@ -283,6 +283,16 @@
       &mdash;
       <span class='desc'>If <code>true</code>, adds a 0ms delay to serialization, to allow other actions on the stack to occur.  If <code>false</code>, Domnit might not give up control until it&#39;s finished.  Defaults to <code>true</code>. </span>
     </li>
+    <li>
+      <span class='name'>moveListeners</span>
+      <span class='type'>
+        (
+          <tt>Boolean, String</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>If <code>false</code>, leaves all event listeners.  If <code>String</code>, moves <code>on[event]</code> listeners to <code>moveListeners</code>+<code>on[event]</code>.  Defaults to <code>data-</code>. </span>
+    </li>
   </ul>
 </div>
   </div>

@@ -7982,6 +7982,24 @@ ElementSerializer$1 = (function() {
     }
   };
 
+  ElementSerializer.prototype.moveListeners = function() {
+    var attr, j, len, ref, results;
+    if (!this.opt.moveListeners) {
+      return;
+    }
+    ref = this.el.attributes;
+    results = [];
+    for (j = 0, len = ref.length; j < len; j++) {
+      attr = ref[j];
+      if (!(attr.name.indexOf("on") === 0)) {
+        continue;
+      }
+      this.el.setAttribute(this.opt.moveListeners + attr.name, this.el.getAttribute(attr.name));
+      results.push(this.el.removeAttribute(attr.name));
+    }
+    return results;
+  };
+
 
   /*
   Modifies `@el` with common modifications.  Intended to be extended by other classes.
@@ -8266,6 +8284,8 @@ Domnit = (function() {
   @option opt [Integer] concurrency Define how many serializations can occur concurrently.  Defaults to `Infinity`.
   @option opt [Boolean] nonBlocking If `true`, adds a 0ms delay to serialization, to allow other actions on the stack to
     occur.  If `false`, Domnit might not give up control until it's finished.  Defaults to `true`.
+  @option opt [Boolean, String] moveListeners If `false`, leaves all event listeners.  If `String`, moves `on[event]`
+    listeners to `moveListeners`+`on[event]`.  Defaults to `data-`.
    */
   function Domnit(opt) {
     this.opt = opt != null ? opt : {};
@@ -8288,7 +8308,8 @@ Domnit = (function() {
       inheritStyle: true,
       inheritSilent: ["font-family", "font-size", "font-style", "font-variant", "font-weight", "line-height", "letter-spacing", "visibility"],
       concurrency: 2e308,
-      nonBlocking: true
+      nonBlocking: true,
+      moveListeners: "data-"
     });
   }
 
