@@ -2,6 +2,7 @@
 
 ### Added
 - CodeMirror demonstration
+- [Domnit][Domnit#constructor] takes `concurrency` option, limiting how much Domnit blocks other processes.
 
 ## [0.3.0] - 2016-11-04
 

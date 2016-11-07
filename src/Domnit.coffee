@@ -42,6 +42,7 @@ class Domnit
     attributes are considered inherited by the W3C (not guarenteed to be the behavior of every browser).
     Default: `font-family`, `font-size`, `font-style`, `font-variant`, `font-weight`, `line-height`, `letter-spacing`,
     `visibility`.
+  @option opt [int] concurrency Define how many serializations can occur concurrently.  Defaults to `Infinity`.
   ###
   constructor: (@opt={}) ->
     defaultsDeep @opt,
@@ -62,6 +63,7 @@ class Domnit
       inheritStyle: yes
       inheritSilent: ["font-family", "font-size", "font-style", "font-variant", "font-weight", "line-height",
         "letter-spacing", "visibility"]
+      concurrency: Infinity
 
   @ElementSerializer = ElementSerializer
 
@@ -117,11 +119,8 @@ class Domnit
     return "" unless @passFilter(el) and @passFilterHidden(el) and @passDisplayNone(el)
     customSerialize = "#{el.tagName.toLowerCase()}Serializer"
     Serializer = @[customSerialize] ? @elementSerializer
-    children = []
-    for child in el.children
-      children.push @serialize child, no
     Promise
-      .all children
+      .map el.children, ((child) => @serialize child, no), {concurrency: @opt.concurrency}
       .then (children) =>
         element = new Serializer el, children, @opt, root
         element.toString()
