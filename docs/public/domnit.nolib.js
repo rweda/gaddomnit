@@ -2759,7 +2759,9 @@ Domnit = (function() {
     attributes are considered inherited by the W3C (not guarenteed to be the behavior of every browser).
     Default: `font-family`, `font-size`, `font-style`, `font-variant`, `font-weight`, `line-height`, `letter-spacing`,
     `visibility`.
-  @option opt [int] concurrency Define how many serializations can occur concurrently.  Defaults to `Infinity`.
+  @option opt [Integer] concurrency Define how many serializations can occur concurrently.  Defaults to `Infinity`.
+  @option opt [Boolean] nonBlocking If `true`, adds a 0ms delay to serialization, to allow other actions on the stack to
+    occur.  If `false`, Domnit might not give up control until it's finished.  Defaults to `true`.
    */
   function Domnit(opt) {
     this.opt = opt != null ? opt : {};
@@ -2781,7 +2783,7 @@ Domnit = (function() {
       filterDisplayNone: false,
       inheritStyle: true,
       inheritSilent: ["font-family", "font-size", "font-style", "font-variant", "font-weight", "line-height", "letter-spacing", "visibility"],
-      concurrency: 2
+      concurrency: 2e308
     });
   }
 
@@ -2856,13 +2858,21 @@ Domnit = (function() {
     }
     customSerialize = (el.tagName.toLowerCase()) + "Serializer";
     Serializer = (ref = this[customSerialize]) != null ? ref : this.elementSerializer;
-    return Promise.map(el.children, ((function(_this) {
-      return function(child) {
-        return _this.serialize(child, false);
+    return Promise.all([]).then((function(_this) {
+      return function() {
+        if (_this.opt.nonBlocking) {
+          return Promise.delay(0);
+        }
       };
-    })(this)), {
-      concurrency: this.opt.concurrency
-    }).then((function(_this) {
+    })(this)).then((function(_this) {
+      return function() {
+        return Promise.map(el.children, (function(child) {
+          return _this.serialize(child, false);
+        }), {
+          concurrency: _this.opt.concurrency
+        });
+      };
+    })(this)).then((function(_this) {
       return function(children) {
         var element;
         element = new Serializer(el, children, _this.opt, root);

@@ -42,7 +42,9 @@ class Domnit
     attributes are considered inherited by the W3C (not guarenteed to be the behavior of every browser).
     Default: `font-family`, `font-size`, `font-style`, `font-variant`, `font-weight`, `line-height`, `letter-spacing`,
     `visibility`.
-  @option opt [int] concurrency Define how many serializations can occur concurrently.  Defaults to `Infinity`.
+  @option opt [Integer] concurrency Define how many serializations can occur concurrently.  Defaults to `Infinity`.
+  @option opt [Boolean] nonBlocking If `true`, adds a 0ms delay to serialization, to allow other actions on the stack to
+    occur.  If `false`, Domnit might not give up control until it's finished.  Defaults to `true`.
   ###
   constructor: (@opt={}) ->
     defaultsDeep @opt,
@@ -120,7 +122,11 @@ class Domnit
     customSerialize = "#{el.tagName.toLowerCase()}Serializer"
     Serializer = @[customSerialize] ? @elementSerializer
     Promise
-      .map el.children, ((child) => @serialize child, no), {concurrency: @opt.concurrency}
+      .all []
+      .then =>
+        Promise.delay(0) if @opt.nonBlocking
+      .then =>
+        Promise.map el.children, ((child) => @serialize child, no), {concurrency: @opt.concurrency}
       .then (children) =>
         element = new Serializer el, children, @opt, root
         element.toString()

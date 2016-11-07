@@ -3,6 +3,7 @@
 ### Added
 - CodeMirror demonstration
 - [Domnit][Domnit#constructor] takes `concurrency` option, limiting how much Domnit blocks other processes.
+- [Domnit][Domnit#constructor] takes `nonBlocking` option, requiring Domnit to give up process control.
 
 ## [0.3.0] - 2016-11-04
 

@@ -267,11 +267,21 @@
       <span class='name'>concurrency</span>
       <span class='type'>
         (
-          <tt>int</tt>
+          <tt>Integer</tt>
         )
       </span>
       &mdash;
       <span class='desc'>Define how many serializations can occur concurrently.  Defaults to <code>Infinity</code>. </span>
+    </li>
+    <li>
+      <span class='name'>nonBlocking</span>
+      <span class='type'>
+        (
+          <tt>Boolean</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>If <code>true</code>, adds a 0ms delay to serialization, to allow other actions on the stack to occur.  If <code>false</code>, Domnit might not give up control until it&#39;s finished.  Defaults to <code>true</code>. </span>
     </li>
   </ul>
 </div>
